@@ -22,8 +22,7 @@ The particular requirements, and the percentage of the grade (100 pts total) the
 
 * Four local operations: **EdgeCollapse**, **EdgeFlip**, **EdgeSplit** and **FaceBevel** (10 pts each)
 * Four global operations: **Triangulation**, **LinearSubdivision**, **CatmullClarkSubdivision** and **Simplification** (10 pts each)
-* Any one of the two global operations: **LoopSubdivision**, **IsotropicRemeshing** (10 pts)
-* Create one beautiful 3D model using Cardinal3D (10 pts)
+* Create one beautiful 3D model using Cardinal3D (20 pts)
 
 In other words, everyone has to implement **EdgeCollapse**, **EdgeFlip**, **EdgeSplit**, **FaceBevel**, **Triangulation**, **LinearSubdivision**, **Catmull-Clark** and **Simplification**. These features are the bare minimum needed to model interesting subdivision surfaces; **Triangulation** is necessary in order to do the global remeshing task(s). Note that some of the global tasks require that you implement specific local operations! For instance, the implementation of **Simplification** depends on **EdgeCollapse**. In summary, we list all the local operations as follows (these operations are described in the User Guide):
 
