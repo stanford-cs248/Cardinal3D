@@ -21,8 +21,8 @@ The User Guide on the wiki describes a large number of features that are in prin
 The particular requirements, and the percentage of the grade (100 pts total) they correspond to, are:
 
 * Four local operations: **EdgeCollapse**, **EdgeFlip**, **EdgeSplit** and **FaceBevel** (10 pts each)
-* Four global operations: **Triangulation**, **LinearSubdivision**, **CatmullClarkSubdivision** and **Simplification** (10 pts each)
-* Create one beautiful 3D model using Cardinal3D (20 pts)
+* Four global operations: **Triangulation** and **LinearSubdivision** (10 pts each), **CatmullClarkSubdivision** and **Simplification** (14 pts each)
+* Create one beautiful 3D model using Cardinal3D (12 pts)
 
 In other words, everyone has to implement **EdgeCollapse**, **EdgeFlip**, **EdgeSplit**, **FaceBevel**, **Triangulation**, **LinearSubdivision**, **Catmull-Clark** and **Simplification**. These features are the bare minimum needed to model interesting subdivision surfaces; **Triangulation** is necessary in order to do the global remeshing task(s). Note that some of the global tasks require that you implement specific local operations! For instance, the implementation of **Simplification** depends on **EdgeCollapse**. In summary, we list all the local operations as follows (these operations are described in the User Guide):
 
