@@ -20,14 +20,12 @@ The User Guide on the wiki describes a large number of features that are in prin
 
 The particular requirements, and the percentage of the grade (100 pts total) they correspond to, are:
 
-* Four of the local operations: **EdgeCollapse**, **EdgeFlip**, **EdgeSplit** and **FaceBevel** (10 pts each)
-* Three of the global operations: **Triangulation**, **LinearSubdivision**, and **CatmullClarkSubdivision** (10 pts each)
-* One of: **LoopSubdivision**, **IsotropicRemeshing**, or **Simplification** (10 pts)
-* Create one beautiful 3D model using Cardinal3D (15 pts)
-* Submit a suggested improvement to the assignment documentation on Piazza (5 pts)
+* Four local operations: **EdgeCollapse**, **EdgeFlip**, **EdgeSplit** and **FaceBevel** (10 pts each)
+* Four global operations: **Triangulation**, **LinearSubdivision**, **CatmullClarkSubdivision** and **Simplification** (10 pts each)
+* Any one of the two global operations: **LoopSubdivision**, **IsotropicRemeshing** (10 pts)
+* Create one beautiful 3D model using Cardinal3D (10 pts)
 
-
-In other words, everyone has to implement **EdgeCollapse**, **EdgeFlip**, **EdgeSplit**, **FaceBevel**, **Triangulation**, **LinearSubdivision**, and **Catmull-Clark**. These features are the bare minimum needed to model interesting subdivision surfaces; **Triangulation** is necessary in order to do the global remeshing task(s). Note that some of the global tasks require that you implement specific local operations! For instance, the implementation of **Simplification** depends on **EdgeCollapse**. In summary, we list all the local operations as follows (these operations are described in the User Guide):
+In other words, everyone has to implement **EdgeCollapse**, **EdgeFlip**, **EdgeSplit**, **FaceBevel**, **Triangulation**, **LinearSubdivision**, **Catmull-Clark** and **Simplification**. These features are the bare minimum needed to model interesting subdivision surfaces; **Triangulation** is necessary in order to do the global remeshing task(s). Note that some of the global tasks require that you implement specific local operations! For instance, the implementation of **Simplification** depends on **EdgeCollapse**. In summary, we list all the local operations as follows (these operations are described in the User Guide):
 
 * **VertexBevel**
 * **EdgeBevel**
@@ -44,9 +42,9 @@ The global operations, and their dependency on local operations, are as follows:
 * **Triangulation** - everyone must implement
 * **LinearSubdivision** - everyone must implement
 * **CatmullClarkSubdivision** - everyone must implement
+* **Simplification** - everyone must implement
 * **LoopSubdivision** - depends on **EdgeSplit** and **EdgeFlip**
 * **IsotropicRemeshing** - depends on **EdgeSplit**, **EdgeFlip**, and **EdgeCollapse**
-* **Simplification** - depends on **EdgeCollapse**
 
 You are free to change the subset of features you choose to implement at any point during the assignment, but you should clearly indicate which features you chose (including those implemented for extra credit) by putting this information in your writeup (described below). You might find it worthwhile using the checkConsistency member function of the HalfedgeMesh class to help debug your operations.
 
@@ -58,23 +56,6 @@ Every student is required to submit a 3D model created from cube.dae using their
 NOTE: We are expecting some high-quality output here---or at least some creativity! Don't just brush this one off. :-)
 
 Include this model in the root directory of your submission as model.dae.
-
-#### Documentation
-Clear, well-written documentation is a critical part of software development. Since you (the students) are the ones who will most benefit from good documentation---or will suffer through bad documentation---we are "crowd sourcing" improvements to the course material. What did you find confusing---and then finally figure out?
-
-As 5% of your assignment grade, you will need to submit suggested edits to the assignment documentation. These could be:
-
-* Suggested changes or additions to the assignment handout
-* Suggested changes or additions to assignment Wiki 
-* Suggested changes or additions to comments in the skeleton code
-
-Do not wait until the due date to submit these suggested edits. They will be most helpful to your classmates (and to us!) if they are submitted ahead of time, so that we can immediately incorporate any good suggestions into the actual course material. To submit your edits, you must therefore:
-
-* Go on Piazza
-* Attach the thread with the label **a2wiki**
-* Make an anonymous (not private) post with your suggested edit
-
-The TAs will monitor this label, and immediately update the docs with any/all useful suggestions. This Piazza post will also be recorded as part of your assignment grade. Note that we do not have to accept your edit in order for you to receive full credit on the assignment. However, we will grade your edits based on whether they appear to be a "good faith effort" to make a useful comment. In other words, did you really think about what is clear/unclear and provide a useful edit? Or did you just write something totally random at the very last minute? :-) Especially useful edits (e.g., those that provide nice insights, or point out serious bugs/errors) may receive extra credit.
 
 ## Writeup
 Additionally, you will submit a short document explaining what you have implemented, and any particular details of your submission. If your submission includes any implementations which are not entirely functional, please detail what works and what doesn't, along with where you got stuck. This document does not need to be long; correctly implemented features may simply be listed, and incomplete features should be described in a few sentences at most.
