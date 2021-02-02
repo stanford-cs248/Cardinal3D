@@ -38,6 +38,7 @@ Notes:
 - You can instead use ``cmake -DCMAKE_BUILD_TYPE=Debug ..`` to build in debug mode, which, while far slower, makes the debugging experience much more intuitive.
 - You can replace ``4`` with the number of build processes to run in parallel (set to the number of cores in your machine for maximum utilization).
 - If you have both gcc and clang installed and want to build with clang, you should run ``CC=clang CXX=clang++ cmake ..`` instead.
+- Since our codebase uses new features in c++17, you need to have g++ version >= 7 to compile it.
 
 ### Windows
 
@@ -79,3 +80,6 @@ make -j4
 Notes:
 - You can instead use ``cmake -DCMAKE_BUILD_TYPE=Debug ..`` to build in debug mode, which, while far slower, makes the debugging experience much more intuitive.
 - You can replace ``4`` with the number of build processes to run in parallel (set to the number of cores in your machine for maximum utilization).
+
+### Remote server
+Currently, Cardinal3D cannot be built on either Rice or Myth server, due to the c++17 features (both servers only support g++-5). We are in contact with the admins of Myth and will update the progress on piazza. If you encounter issues building Cardinal3D locally, please post on piazza or come to OH.  
