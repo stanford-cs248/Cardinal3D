@@ -6,16 +6,11 @@ permalink: /animation/
 
 # Animation Overview
 
-There are four primary components that must be implemented to support Animation functionality.
-
-**A4.0**
+There are three primary components that must be implemented to support Animation functionality.
 
 - [(Task 1) Spline Interpolation](splines.md)
 - [(Task 2) Skeleton Kinematics](skeleton_kinematics.md)
-
-**A4.5**
 - [(Task 3) Linear Blend Skinning](skinning.md)
-- [(Task 4) Particle Simulation]() (coming soon)
 
 Each task is described at the linked page.
 
