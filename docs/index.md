@@ -11,7 +11,7 @@ editing, realistic path tracing, and dynamic animation. Implementing functionali
 constitutes the majority of the coursework for CS248 (Interactive Computer Graphics) at Stanford University
 
 These pages describe how to set up and use Cardinal3D. Start here!
-- [Git Setup](git): create a private git mirror that can pull changes from Cardinal3D. 
+- [Git Setup](git): create a private git mirror that can pull changes from Cardinal3D (optional). 
 - [Building Cardinal3D](build): build and run Cardinal3D on various platforms.
 - [User Guide](guide): learn the intended functionality for end users.
 
