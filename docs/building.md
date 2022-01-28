@@ -81,7 +81,7 @@ Notes:
 - You can replace ``4`` with the number of build processes to run in parallel (set to the number of cores in your machine for maximum utilization).
 
 ### Remote server
-Currently, Cardinal3D can only be built on Myth server, due to the c++17 features (Rice server only supports g++-5). 
+If you can not build Cardinal3D locally, you can try to build it on Myth server (Rice server does not work for this project). 
 First install latest CMake locally and create an alias for it 
 ```
 pip install cmake --user
@@ -91,3 +91,6 @@ Then create the build folder and run the following command to use g++-7.
 ```
 CC=gcc-7 CXX=g++-7 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
 ``` 
+If you are working on MAC, you need to install X Window System [XQuartz](https://www.cyberciti.biz/faq/apple-osx-mountain-lion-mavericks-install-xquartz-server/) for ssh X11 forwarding. 
+
+If none of the build works, please consider using [VMWare fusion](https://stanford.onthehub.com/WebStore/Welcome.aspx) with [Ubuntu desktop image](https://ubuntu.com/download/desktop). 
