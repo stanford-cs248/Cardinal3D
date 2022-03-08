@@ -19,6 +19,8 @@ The developer manual describes what you must implement to complete Cardinal3D. I
 - [MeshEdit](meshedit)
 - [PathTracer](pathtracer)
 - [Animation](animation)
+- [PathTracer](pathtracer_old)
+- [Animation](animation_old)
 
 ## Project Philosophy
 

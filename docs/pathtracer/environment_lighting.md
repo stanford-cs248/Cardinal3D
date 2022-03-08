@@ -1,75 +1,99 @@
 ---
 layout: default
-title: "(Task 7) Environment Lighting"
+title: (Task 7) Environment Lighting
+parent: "A3: Pathtracer"
 permalink: /pathtracer/environment_lighting
+has_children: false
+has_toc: false
 ---
 
 # (Task 7) Environment Lighting
+
+## Walkthrough
+<video width="750" height="500" controls>
+    <source src="videos/Task7_EnvMap.mp4" type="video/mp4">
+</video>
 
 The final task of this assignment will be to implement a new type of light source: an infinite environment light. An environment light is a light that supplies incident radiance (really, the light intensity dPhi/dOmega) from all directions on the sphere. Rather than using a predefined collection of explicit lights, an environment light is a capture of the actual incoming light from some real-world scene; rendering using environment lighting can be quite striking.
 
 The intensity of incoming light from each direction is defined by a texture map parameterized by phi and theta, as shown below.
 
-![envmap_figure](envmap_figure.jpg)
+![envmap_figure](figures/envmap_figure.jpg)
 
-In this task you need to implement the `Env_Map::sample` and `Env_Map::sample_direction` method in `student/env_light.cpp`. You'll start with uniform direction sampling to get things working, and then move to a more advanced implementation that uses **importance sampling** to significantly reduce variance in rendered images.
+In this task you will implement `Env_Map::sample`, `Env_Map::pdf`, and `Env_Map::evaluate` in `student/env_light.cpp`. You'll start with uniform sampling to get things working, and then move onto a more advanced implementation that uses **importance sampling** to significantly reduce variance in rendered images.
 
-## Step 1: Uniform sampling
-To get things working, your first implementation of `Env_Map::sample` will be quite simple. You should generate a random direction on the sphere (**with uniform (1/4pi) probability with respect to solid angle**), convert this direction to coordinates (phi, theta) and then look up the appropriate radiance value in the texture map using **bilinear interpolation** (note: we recommend you begin with bilinear interpolation to keep things simple.)
+---
 
+## Step 1: Uniformly sampling the environment map
 
-Since high dynamic range environment maps can be large files, we have not included them in the starter code repo. You can download a set of environment maps from this [link](http://15462.courses.cs.cmu.edu/fall2015content/misc/asst3_images/asst3_exr_archive.zip). You can designate rendering to use a particular environment map from the GUI: go to `layout` -> `new light` -> `environment map`-> `add`, and then select one of the environment maps that you have just downloaded.
+To get things working, your first implementation of `Env_Map::sample` will be quite simple. First, check out the interface of `Env_Map` in `rays/env_light.h`. For `Env_Map`, the `image` field is a `HDR_Image`, which contains the size and pixels of the environment map. The `HDR_Image` interface may be found in `util/hdr_image.h`.
 
-![envmap_gui](envmap_gui.png)
+Second, implement the uniform sphere sampler in `student/samplers.cpp`. Implement `Env_Map::sample` using `uniform_sampler` to generate a direction uniformly at random. Implement `Env_Map::pdf` by returning the PDF of a uniform sphere distribution.
 
-For more HDRIs for creative environment maps, check out [HDRIHAVEN](https://hdrihaven.com/)
+Lastly, in `Env_Map::evaluate`, convert the given direction to image coordinates (phi and theta) and look up the appropriate radiance value in the texture map using **bilinear interpolation**.
 
+Since high dynamic range environment maps can be large files, we have not included them in the Cardinal3D repository. You can download a set of sample environment maps [here](http://15462.courses.cs.cmu.edu/fall2015content/misc/asst3_images/asst3_exr_archive.zip).
 
-**Tips:**
+To use a particular environment map with your scene, select `layout` -> `new light` -> `environment map`-> `add`, and  select your file. For more creative environment maps, check out [Poly Haven](https://polyhaven.com/)
 
-* You must write your own code to uniformly sample the sphere.
-* check out the interface of `Env_Map` in `rays/env_light.h`. For `Env_Map`, the `image` field is the actual map being represented as a `HDR_Image`, which contains the pixels of the environment map and size of the environment texture. The interface for `HDR_Image` is in `util/hdr_image.h`.
+![envmap_gui](images/envmap_gui.png)
 
 
 ## Step 2: Importance sampling the environment map
 
-Much like light in the real world, most of the energy provided by an environment light source is concentrated in the directions toward bright light sources. **Therefore, it makes sense to bias selection of sampled directions towards the directions for which incoming radiance is the greatest.** In this final task you will implement an importance sampling scheme for environment lights. For environment lights with large variation in incoming light intensities, good importance sampling will significantly improve the quality of renderings.
+Much like light in the real world, most of the energy provided by an environment light source is concentrated in the directions toward bright light sources. Therefore, it makes sense to prefer sampling directions for which incoming radiance is the greatest. For environment lights with large variation in incoming light intensities, good importance sampling will significantly reduce the variance of your renderer.
 
-The basic idea is that you will assign a probability to each pixel in the environment map based on the total flux passing through the solid angle it represents. 
+The basic idea of importance sampling an image is assigning a probability to each pixel based on the total radiance coming from the solid angle it subtends.
 
-A pixel with coordinate <img src="environment_eq1.png" width ="45"> subtends an area <img src="environment_eq2.png" width = "80"> on the unit sphere (where <img src="environment_eq3.png" width = "20"> and <img src="environment_eq4.png" width = "20"> the angles subtended by each pixel -- as determined by the resolution of the texture). Thus, the flux through a pixel is proportional to <img src="environment_eq5.png" width = "45">. (We only care about the relative flux through each pixel to create a distribution.)
+A pixel with coordinate <img src="figures/environment_eq1.png" width ="45"> subtends an area <img src="figures/environment_eq2.png" width = "80"> on the unit sphere (where <img src="figures/environment_eq3.png" width = "20"> and <img src="figures/environment_eq4.png" width = "20"> are the angles subtended by each pixel as determined by the resolution of the texture). Thus, the flux through a pixel is proportional to <img src="figures/environment_eq5.png" width = "45">. (Since we are creating a distribution, we only care about the relative flux through each pixel, not the absolute flux.)
 
-**Summing the fluxes for all pixels, then normalizing the values so that they sum to one, yields a discrete probability distribution for picking a pixel based on flux through its corresponding solid angle on the sphere.**
+**Summing the flux for all pixels, then normalizing each such that they sum to one, yields a discrete probability distribution over the pixels where the probability one is chosen is proportional to its flux.**
 
-The question is now how to sample from this 2D discrete probability distribution. We recommend the following process which reduces the problem to drawing samples from two 1D distributions, each time using the inversion method discussed in class:
+The question is now how to efficiently get samples from this discrete distribution. To do so, we recommend treating the distribution as a single vector representing the whole image (row-major). In this form, it is easy to compute its CDF: the CDF for each pixel is the sum of the PDFs of all pixels before it. Once you have a CDF, you can use inversion sampling to pick out a particular index and convert it to a pixel and a 3D direction.
 
-* Given <img src="environment_eq6.png" width ="45"> the probability distribution for all pixels, compute the marginal probability distribution <img src="environment_eq7.png" width ="100"> for selecting a value from each row of pixels.
+The bulk of the importance sampling algorithm will be found as `Samplers::Sphere::Image` in `student\samplers.cpp`. You will need to implement the constructor, the inversion sampling function, and the PDF function, which returns the value of your PDF at a particular direction. Once these methods are complete, upgrade `Env_Map::sample` and `Env_Map::pdf` to use your new `image_sampler`.
 
-* Given for any pixel, compute the conditional probability <img src="environment_eq8.png" width ="100">.
+Be sure to update your `image_sampler` to scale the returned PDF according to
+the Jacobian that appears when converting from one sampling distribution to the
+other. The PDF value that corresponds to a pixel in the HDR map should be
+multiplied by the Jacobian below before being returned by
+`Samplers::Sphere::Image::pdf`.
 
-Given the marginal distribution for <img src="environment_eq9.png" width ="10"> and the conditional distributions <img src="environment_eq10.png" width ="45"> for environment map rows, it is easy to select a pixel as follows:
+<center><img src="figures/env_light_sampling_jacobian_diagram.png"></center>
 
-1. Use the inversion method to first select a "row" of the environment map according to <img src="environment_eq11.png" width ="35">.
-2. Given this row, use the inversion method to select a pixel in the row according to <img src="environment_eq12.png" width ="45">.
+The Jacobian for transforming the PDF from the HDR map sampling distribution to
+the unit sphere sampling distribution can be thought of as two separate
+Jacobians: one to a rectilinear projection of the unit sphere, and then the
+second to the unit sphere from the rectilinear projection.
 
-**Here are a few tips:**
+The first Jacobian scales the w x h rectangle to a 2pi x pi
+rectangle, going from (dx, dy) space to (d\phi, d\theta) space.
+Since we have a distribution that integrates to 1 over (w,h), in order to obtain
+a distribution that still integrates to 1 over (2pi, pi), we must multiply by the
+ratio of their areas, i.e. (wh / 2pi^2). This is the first Jacobian.
 
-* When computing areas corresponding to a pixel, use the value of theta at the pixel centers.
-* We recommend precomputing the joint distributions p(phi, theta) and marginal distributions p(theta) in the constructor of `Sampler::Sphere::Image` and storing the resulting values in fields `pdf`. See `rays/sampler.h`.
-* `Spectrum::luma()` returns the luminance (brightness) of a Spectrum. The probability of a pixel should be proportional to the product of its luminance and the solid angle it subtends.
-* `std::lower_bound` is your friend. Documentation is [here](https://en.cppreference.com/w/cpp/algorithm/lower_bound).
+Then in order to go from integrating over the rectilinear projection of the unit
+sphere to the unit sphere, we need to go from integrating over (d\phi, d\theta) to
+solid angle (d\omega). Since we know that d\omega = sin(\theta) d\phi d\theta,
+if we want our new distribution to still integrate to 1, we must divide by sin(\theta), our second Jacobian.
 
+Altogether, the final Jacobian is (wh / 2pi^2 sin(\theta)).
 
-## Sample results for importance sampling:
+---
 
-ennis.exr with 32 spp
+### Tips
 
-![ennis](new_results/ennis32importance.png) 
+- Remember to use the coordinate system as outlined in Task 1!
+- When computing areas corresponding to a pixel, use the value of theta at the pixel centers.
+- Compute the PDF and CDF in the constructor of `Sampler::Sphere::Image`, storing them values in fields `_pdf` and `_cdf`. See `rays/sampler.h`.
+- `Spectrum::luma()` returns the luminance (brightness) of a Spectrum. The weight assigned to a pixel should be proportional both its luminance and the solid angle it subtends.
+- For inversion sampling, use `std::upper_bound`: it's a binary search. Read about it [here](https://en.cppreference.com/w/cpp/algorithm/upper_bound).
+- If you didn't use the ray log to debug area light sampling, start using it now to visualize what directions are being sampled from the environment map.
 
-uffiz.exr with 32 spp
+---
 
-![uffiz](new_results/uffiz32importance.png) 
+## Reference Results
 
-field.exr with 1024 spp
-
-![ennis](new_results/field1024importance.png) 
+![ennis](images/ennis.png)
+![uffiz](images/uffiz.png)
+![grace](images/grace.png)

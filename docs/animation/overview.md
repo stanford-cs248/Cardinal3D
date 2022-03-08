@@ -13,7 +13,6 @@ There are four primary components that must be implemented to support Animation 
 
 - [(Task 1) Spline Interpolation](splines)
 - [(Task 2) Skeleton Kinematics](skeleton_kinematics)
-
 - [(Task 3) Linear Blend Skinning](skinning)
 
 Each task is described at the linked page.

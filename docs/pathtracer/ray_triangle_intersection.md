@@ -1,30 +1,40 @@
 ---
 layout: default
-title: "Ray Triangle Intersection"
+title: Ray Triangle Intersection
 permalink: /pathtracer/ray_triangle_intersection
+grand_parent: "A3: Pathtracer"
+nav_order: 1
+parent: (Task 2) Intersections
 ---
 
 # Ray Triangle Intersection
 
-Given a triangle defined by points _p0_, _p1_ and _p2_ and a ray given by its origin _o_ and direction _d_, the barycentrics of the hit point as well as the _t_-value of the hit can be obtained by solving the system:
+## Step 1: `Triangle::hit`
 
-![triangle_eq1](triangle_eq1.png)
+The first intersect routine that the `hit` routines for the triangle mesh in `student/tri_mesh.cpp`.
 
-Where:
+We recommend that you implement the *Moller-Trumbore algorithm*, a fast algorithm
+that takes advantage of a barycentric coordinates parameterization of the
+intersection point, for ray-triangle intersection.
 
-![triangle_eq2](triangle_eq2.png)
+<center><img src="figures\triangle_intersect_diagram.png" style="height:320px"></center>
+<center><img src="figures\triangle_intersect_eqns.png" style="height:400px"></center>
 
-This system can be solved by Cramer's Rule, yielding:
+There are two important details you should be aware of about intersection:
 
-![triangle_eq3](triangle_eq3.png)
+* When finding the first-hit intersection with a triangle, you need to fill in the `Trace` structure with details of the hit. The structure should be initialized with:
 
-In the above, |a b c| denotes the determinant of the 3x3 with column vectors _a_, _b_, _c_.
-Note that since the determinant is given by:![triangle_eq4](triangle_eq4.png)
-you can rewrite the above as:
-![triangle_eq5](triangle_eq5.png)
+    * `hit`: a boolean representing if there is a hit or not.
+    * `distance`: the distance from the origin of the ray to the hit point.
+    * `position`: the position of the hit point. This can be computed from `ray.at(distance)`.
+    * `normal`: the shading normal of the surface at the hit point. The shading normal for a triangle is computed by linear interpolation from per-vertex normals using the barycentric coordinates of the hit point as their weights. The shading normal for a sphere is the same as its geometric normal.
+    * `origin`: the origin of the query ray (ignore).
+    * `material`: the material ID of the hit object (ignore).
 
-Of which you should notice a few common subexpressions that, if exploited in an implementation, make computation of _t_, _u_, and _v_ substantially more efficient.
+Once you've successfully implemented triangle intersection, you will be able to render many of the scenes in the media directory. However, your ray tracer will be very slow!
+
+**Tip:** While you are working with `student/tri_mesh.cpp`, you can choose to implement `Triangle::bbox` as well (pretty straightforward to do), which is needed for task 3.
 
 A few final notes and thoughts:
-
-If the denominator _dot((e1 x d), e2)_ is zero, what does that mean about the relationship of the ray and the triangle? Can a triangle with this area be hit by a ray? Given _u_ and _v_, how do you know if the ray hits the triangle? Don't forget that the intersection point on the ray should be within the ray's `time_bound`.
+- If the denominator _dot((e1 x d), e2)_ is zero, what does that mean about the relationship of the ray and the triangle? Can a triangle with this area be hit by a ray? Given _u_ and _v_, how do you know if the ray hits the triangle? Don't forget that the intersection point on the ray should be within the ray's `dist_bounds`.
+- **Don't** use `abs()`. In GCC, this is the integer-only absolute value function. To get the float version, use `std::abs()` or `fabsf()`.
