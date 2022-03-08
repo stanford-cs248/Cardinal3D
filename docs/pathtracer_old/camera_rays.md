@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(Task 1) Generating Camera Rays"
-permalink: /pathtracer/camera_rays
+permalink: /pathtracer_old/camera_rays
 ---
 
 # (Task 1) Generating Camera Rays

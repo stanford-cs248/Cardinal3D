@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Environment Light Importance Sampling"
-permalink: /pathtracer/importance_sampling
+permalink: /pathtracer_old/importance_sampling
 ---
 
 # Environment Light Importance Sampling

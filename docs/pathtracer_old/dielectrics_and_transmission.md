@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Dielectrics and Transmission"
-permalink: /pathtracer/dielectrics_and_transmission
+permalink: /pathtracer_old/dielectrics_and_transmission
 ---
 
 # Dielectrics and Transmission

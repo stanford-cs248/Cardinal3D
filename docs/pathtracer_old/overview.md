@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "PathTracer Overview"
-permalink: /pathtracer/
+permalink: /pathtracer_old/
 ---
 
 # PathTracer Overview

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Animation Overview"
-permalink: /animation/skinning
+permalink: /animation_old/skinning
 ---
 
 # Linear Blend Skinning

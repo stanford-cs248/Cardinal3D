@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Skeleton Kinematics"
-permalink: /animation/skeleton_kinematics
+permalink: /animation_old/skeleton_kinematics
 ---
 
 # Skeleton Kinematics

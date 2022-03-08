@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(Task 7) Environment Lighting"
-permalink: /pathtracer/environment_lighting
+permalink: /pathtracer_old/environment_lighting
 ---
 
 # (Task 7) Environment Lighting

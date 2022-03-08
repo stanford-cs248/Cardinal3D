@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(Task 5) Path Tracing"
-permalink: /pathtracer/path_tracing
+permalink: /pathtracer_old/path_tracing
 ---
 
 # (Task 5) Path Tracing

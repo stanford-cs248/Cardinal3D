@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(Task 4) Shadow Rays"
-permalink: /pathtracer/shadow_rays
+permalink: /pathtracer_old/shadow_rays
 ---
 
 # (Task 4) Shadow Rays

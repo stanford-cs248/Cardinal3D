@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Ray Triangle Intersection"
-permalink: /pathtracer/ray_triangle_intersection
+permalink: /pathtracer_old/ray_triangle_intersection
 ---
 
 # Ray Triangle Intersection

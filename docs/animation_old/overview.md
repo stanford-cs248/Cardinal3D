@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Animation Overview"
-permalink: /animation/
+permalink: /animation_old/
 ---
 
 # Animation Overview

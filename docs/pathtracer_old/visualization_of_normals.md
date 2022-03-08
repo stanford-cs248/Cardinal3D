@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Visualization of normals"
-permalink: /pathtracer/visualization_of_normals
+permalink: /pathtracer_old/visualization_of_normals
 ---
 
 # Visualization of normals

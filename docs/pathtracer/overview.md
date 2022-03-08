@@ -11,10 +11,19 @@ has_toc: false
 
 PathTracer is (as the name suggests) a simple path tracer that can render scenes with global illumination. The first part of the assignment will focus on providing an efficient implementation of **ray-scene geometry queries**. In the second half of the assignment you will **add the ability to simulate how light bounces around the scene**, which will allow your renderer to synthesize much higher-quality images. Much like in MeshEdit, input scenes are defined in COLLADA files, so you can create your own scenes to render using Cardinal3D or other free software like [Blender](https://www.blender.org/).
 
-<center><img src="figures\raytracing_diagram.png" style="height:240px"></center>
+<center><img src="figures/raytracing_diagram.png" style="height:240px"></center>
 
 Implementing the functionality of PathTracer is split into 7 tasks:
 <center><img src="images/pathtracing_flowchart.png"></center>
+
+Here are the instructions for each of them:
+- [(Task 1) Generating Camera Rays](camera_rays.md)
+- [(Task 2) Intersecting Objects](intersecting_objects.md)
+- [(Task 3) Bounding Volume Hierarchy](bounding_volume_hierarchy.md)
+- [(Task 4) Shadow Rays](shadow_rays.md)
+- [(Task 5) Path Tracing](path_tracing.md)
+- [(Task 6) Materials](materials.md)
+- [(Task 7) Environment Lighting](environment_lighting.md)
 
 ---
 

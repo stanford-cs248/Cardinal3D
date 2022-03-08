@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(Task 6) Materials"
-permalink: /pathtracer/materials
+permalink: /pathtracer_old/materials
 ---
 
 # (Task 6) Materials

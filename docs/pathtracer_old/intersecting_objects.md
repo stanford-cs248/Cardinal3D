@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(Task 2) Intersecting Objects"
-permalink: /pathtracer/intersecting_objects
+permalink: /pathtracer_old/intersecting_objects
 ---
 
 # (Task 2) Intersecting Objects

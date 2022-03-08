@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "(Task 3) Bounding Volume Hierarchy"
-permalink: /pathtracer/bounding_volume_hierarchy
+permalink: /pathtracer_old/bounding_volume_hierarchy
 ---
 
 # (Task 3) Bounding Volume Hierarchy
