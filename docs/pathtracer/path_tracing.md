@@ -1,63 +1,47 @@
 ---
 layout: default
-title: (Task 4) Path Tracing
+title: "(Task 5) Path Tracing"
 permalink: /pathtracer/path_tracing
-parent: "A3: Pathtracer"
 ---
 
-# (Task 4) Path Tracing
+# (Task 5) Path Tracing
 
-Up to this point, your renderer only computes object visibility using ray tracing. Now, we will simulate the complicated paths light can take through the scene, bouncing off many surfaces before eventually reaching the camera. Simulating this multi-bounce light is referred to as _global illumination_, and it is critical to producing realistic images, especially when specular surfaces are present.
+Up to this point, your renderer simulates light which begins at a source, bounces off a surface, and hits a camera. However in the real world, light can take much more complicated paths, bouncing of many surfaces before eventually reaching the camera. Simulating this multi-bounce light is referred to as _indirect illumination_, and it is critical to producing realistic images, especially when specular surfaces are present. In this task you will modify your ray tracer to simulate multi-bounce light, adding support for indirect illumination.
 
----
 
-## Step 1: `Pathtracer::trace`
+You must modify `Pathtracer::trace_ray` to simulate multiple bounces. We recommend using the [Russian Roulette](http://15462.courses.cs.cmu.edu/spring2020/lecture/montecarloraytracing/slide_044) algorithm discussed in class.
 
-`Pathtracer::trace` is the function responsible for coordinating the path tracing procedure. We've given you code to intersect a ray with the scene and collect information about the surface intersection necessary for computing the lighting at that point. You should read this function and remove the early-out that colors surfaces based on their normal direction.
+The basic structure will be as follows:
 
-## Step 2: `BSDF_Lambertian`
+* (1) Randomly select a new ray direction using `bsdf.sample` (which you will implement in Step 2)
+* (2) Potentially terminate the path (using Russian roulette)
+* (3) Recursively trace the ray to evaluate weighted reflectance contribution due to light from this direction. Remember to respect the maximum number of bounces from `max_depth` (which is a member of class `Pathtracer`).
 
-Implement `BSDF_Lambertian::scatter`, `BSDF_Lambertian::evaluate`, and `BSDF_Lambertian::pdf`. Note that their interfaces are defined in `rays/bsdf.h`. Task 5 will further discuss sampling BSDFs, so reading ahead may help your understanding.
 
-- `BSDF_Lambertian::albedo` is the ratio of incoming light to reflected light,
-  also known as the base color of the Lambertian material.
-- `BSDF_Lambertian::scatter` returns a `Scatter` object, with `direction` and `attenuation` components. You can access the material's `sampler` object to randomly sample a direction from a cosine-weighted hemisphere distribution and, you can compute the attenuation component via `BSDF_Lambertian::evaluate`.
-- `BSDF_Lambertian::evaluate` computes the ratio of incoming to outgoing radiance given a pair of directions. Traditionally, BSDFs are specified as the ratio of incoming radiance to outgoing _irradiance_, which necessitates the extra `cos(theta)` factor in the rendering equation. In Cardinal3D, however, we expect the BSDF to operate only on radiance, so you must scale the evaluation accordingly.
-- `BSDF_Lambertian::pdf` computes the PDF for sampling some incoming direction given some outgoing direction. However, the Lambertian BSDF in particular does not depend on the outgoing direction. Since we sampled the incoming direction from a cosine-weighted hemisphere distribution, what is its PDF?
 
-Note: a variety of sampling functions are provided in `student/samplers.cpp`. The Lambertian BSDF includes a cosine-weighted hemisphere sampler `Samplers::Hemisphere::Cosine sampler` (see `rays/bsdf.h`).
+## Step 2
+Now, Implement `BSDF_Lambertian::sample` for diffusely reflecting, which randomly samples from the distribution and returns a `BSDF_Sample`.  Note that the interface is in `rays/bsdf.h`. Task 6 contains further discussion of sampling BSDFs, reading ahead may help your understanding. The implementation of `BSDF_Lambertian::evaluate` is already provided to you.
 
-## Step 3: `Pathtracer::sample_indirect_lighting`
+Note:
 
-In this function, you will estimate light that bounced off at least one other surface before reaching our shading point. This is called _indirect_ lighting.
-
-- (1) Randomly sample a new ray direction from the BSDF distribution using BSDF::scatter().
-- (2) Create a new world-space ray and call Pathtracer::trace() to get incoming light. You should modify time_bounds so that the ray does not intersect at time = 0. Remember to set the new depth value.
-- (3) Compute Monte Carlo estimate of incoming _indirect_ light scaled by BSDF attenuation.
-
-## Step 4: `Pathtracer::sample_direct_lighting`
-
-Finally, you will estimate light that hit our shading point after being emitted from a light source without any bounces in between. For now, you should use the same sampling procedure as `Pathtracer::sample_indirect_lighting`, except for using the _direct_ component of incoming light. Note that since we are only interested in light emitted from the first intersection, we can trace a ray with `depth = 0`.
-
-Note: separately sampling direct lighting might seem silly, as we could have just gotten both direct and indirect lighting from tracing a single BSDF sample. However, separating the components will allow us to improve our direct light sampling algorithm in task 6.
+* Functions in `student/sampler.cpp` from class `Sampler` contains helper functions for random sampling, which you will use for sampling. Our starter code uses uniform hemisphere sampling `Samplers::Hemisphere::Uniform  sampler`(see `rays/bsdf.h` and `student/sampler.cpp`) which is already implemented. You are welcome to implement Cosine-Weighted Hemisphere sampling for extra credit, but it is not required. If you want to implement Cosine-Weighted Hemisphere sampling, fill in `Hemisphere::Cosine::sample` in `student/samplers.cpp` and then change `Samplers::Hemisphere::Uniform sampler` to `Samplers::Hemisphere::Cosine sampler` in `rays/bsdf.h`.
 
 ---
 
-## Reference Results
+After correctly implementing path tracing, your renderer should be able to make a beautifully lit picture of the Cornell Box. Below is the rendering result of 1024 sample per pixel.
 
-After correctly implementing task 4, your renderer should be able to make a beautifully lit picture of the Cornell Box with Lambertian spheres (`cbox_lambertian.dae`). Below is a render using 1024 samples per pixel (spp):
+![cornell_lambertian](new_results/lambertian.png)
 
-![cbox_lambertian](images/cbox_lambertian.png)
+Note the time-quality tradeoff here. With these commandline arguments, your path tracer will be running with 8 worker threads at a sample rate of 1024 camera rays per pixel, with a max ray depth of 4. This will produce an image with relatively high quality but will take quite some time to render. Rendering a high quality image will take a very long time as indicated by the image sequence below, so start testing your path tracer early! Below are the result and runtime of rendering cornell box with different sample per pixel at 640 by 430 on Macbook Pro(3.1 GHz Dual-Core Intel Core i5).
 
-Note the time-quality tradeoff here. This image was rendered with a sample rate of 1024 camera rays per pixel and a max ray depth of 8. This will produce a relatively high quality result, but will take quite some time to render. Rendering a fully converged image may take a even longer, so start testing your path tracer early!
+![spheres](new_results/timing.png)
 
-Thankfully, runtime will scale (roughly) linearly with the number of samples. Below are the results and runtime of rendering the Lambertian cornell box at 720p on a Ryzen 5950x (max ray depth 8):
+Also note that if you have enabled Russian Roulette, your result may seem noisier.
 
-![cbox_lambertian_timing](images/cbox_lambertian_timing.png)
+Here are a few tips:
 
----
+* The termination probability of paths can be determined based on the [overall throughput](http://15462.courses.cs.cmu.edu/fall2015/lecture/globalillum/slide_044) of the path (you'll likely need to add a field to the Ray structure to implement this) or based on the value of the BSDF given wo and wi in the current step. Keep in mind that delta function BSDFs can take on values greater than one, so clamping termination probabilities derived from BSDF values to 1 is wise.
 
-## Extra Credit
+* To convert a Spectrum to a termination probability, we recommend you use the luminance (overall brightness) of the Spectrum, which is available via `Spectrum::luma`
 
-- Instead of setting a maximum ray depth, implement un-biased russian roulette for path termination. Though russian roulette will increase variance, use of a good heuristic (such as overall path throughput) should improve performance enough to show better convergence in an equal-time comparison. Refer to [Physically Based Rendering](http://www.pbr-book.org/3ed-2018/) chapter 13.7.
-- (Advanced) Implement homogeneous volumetric scattering. Refer to [Physically Based Rendering](http://www.pbr-book.org/3ed-2018/) chapters 11 and 15.
+* We've given you some [pretty good notes](http://15462.courses.cs.cmu.edu/fall2015/lecture/globalillum/slide_047) on how to do this part of the assignment, but it can still be tricky to get correct.
