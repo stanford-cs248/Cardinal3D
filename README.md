@@ -4,7 +4,7 @@ We have created a [Wiki](https://stanford-cs248.github.io/Cardinal3D/) that will
 
 ## Due Date
 
-The assignment is due Feb. 3 at 11:59:59 PM.
+The assignment is due Feb. 4 at 11:59:59 PM.
 
 ## Submission Instructions
 Please zip the following files and upload your zipped file to Gradescope.
@@ -60,7 +60,7 @@ Each additional local operation beyond the basic tasks will be worth 1 pts; each
 
 
 #### America's Next Top 3D Model
-Every student is required to submit a 3D model created from cube.dae using their implementation of Cardinal3D, which will be automatically entered into a class-wide 3D modeling competition. Models will be critiqued and evaluated based on both technical sophistication and aesthetic beauty. Note: Use of any other 3D package (e.g., free or commercial 3D modelers like Maya or Blender) is strictly prohibited! This model must be created by opening cube.dae, applying the operations implemented as part of the assignment, and saving the result.
+Every student is required to submit a 3D model created from cube.dae (or other primitives) using their implementation of Cardinal3D, which will be automatically entered into a class-wide 3D modeling competition. Models will be critiqued and evaluated based on both technical sophistication and aesthetic beauty. Note: Use of any other 3D package (e.g., free or commercial 3D modelers like Maya or Blender) is strictly prohibited! This model must be created by opening cube.dae, applying the operations implemented as part of the assignment, and saving the result.
 
 NOTE: We are expecting some high-quality output here---or at least some creativity! Don't just brush this one off. :-)
 

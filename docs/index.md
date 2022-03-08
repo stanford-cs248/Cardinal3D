@@ -15,7 +15,7 @@ These pages describe how to set up and use Cardinal3D. Start here!
 - [Building Cardinal3D](build): build and run Cardinal3D on various platforms.
 - [User Guide](guide): learn the intended functionality for end users.
 
-The developer manual describes what you must implement to complete Cardinal3D. It is organized under the three main components of the software. Note that only MeshEdit is necessary for the assignment 2, but feel free to check the other two to have more fun with Cardinal3D. 
+The developer manual describes what you must implement to complete Cardinal3D. It is organized under the three main components of the software. Note that only MeshEdit is necessary for the assignment 2, but feel free to check the other two to have more fun with Cardinal3D. The Animation or PathTracer components are possible projects to attempt as final project.
 - [MeshEdit](meshedit)
 - [PathTracer](pathtracer)
 - [Animation](animation)
@@ -63,8 +63,6 @@ worse](https://en.wikipedia.org/wiki/Asymptotic_computational_complexity) just
 because it makes your code easier to write (for instance, using [bubble
 sort](https://en.wikipedia.org/wiki/Bubble_sort) rather than [merge
 sort](https://en.wikipedia.org/wiki/Merge_sort) on large data sets). 
-*   That being said, when it comes to performance, [premature optimization is
-the root of all evil!](https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize) The only way to know whether an optimization matters is to [measure performance](https://en.wikipedia.org/wiki/Profiling_(computer_programming)), and understand [bottlenecks](https://en.wikipedia.org/wiki/Program_optimization#Bottlenecks). 
 *   Finally, you should take pride in your craft. Beautiful things just tend to work better.
 
 Just to reiterate the main point above:
