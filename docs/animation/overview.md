@@ -1,16 +1,20 @@
 ---
 layout: default
-title: "Animation Overview"
+title: "Animation"
 permalink: /animation/
+nav_order: 7
+has_children: true
+has_toc: false
 ---
 
 # Animation Overview
 
-There are three primary components that must be implemented to support Animation functionality.
+There are four primary components that must be implemented to support Animation functionality.
 
-- [(Task 1) Spline Interpolation](splines.md)
-- [(Task 2) Skeleton Kinematics](skeleton_kinematics.md)
-- [(Task 3) Linear Blend Skinning](skinning.md)
+- [(Task 1) Spline Interpolation](splines)
+- [(Task 2) Skeleton Kinematics](skeleton_kinematics)
+
+- [(Task 3) Linear Blend Skinning](skinning)
 
 Each task is described at the linked page.
 
