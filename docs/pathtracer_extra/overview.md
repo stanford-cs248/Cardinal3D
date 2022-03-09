@@ -19,8 +19,8 @@ Implementing the functionality of PathTracer is split into 7 tasks:
 Here are the instructions for each of them:
 - [(Task 1) Generating Camera Rays](camera_rays.md)
 - [(Task 2) Intersecting Objects](intersecting_objects.md)
--- [(Task 2.1) Ray Triangle Intersection](ray_triangle_intersection.md)
--- [(Task 2.2) Ray Sphere Intersection](ray_sphere_intersection.md)
+- [(Task 2.1) Ray Triangle Intersection](ray_triangle_intersection.md)
+- [(Task 2.2) Ray Sphere Intersection](ray_sphere_intersection.md)
 - [(Task 3) Bounding Volume Hierarchy](bounding_volume_hierarchy.md)
 
 - [(Task 4) Path Tracing (different task)](path_tracing.md)
