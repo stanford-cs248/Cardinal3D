@@ -28,6 +28,7 @@ int MSAA::n_samples() {
     case Sample_Count::_32: return 32;
     default: assert(false);
     }
+    return -1;
 }
 
 static void setup_debug_proc();
