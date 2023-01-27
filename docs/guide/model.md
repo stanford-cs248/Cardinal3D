@@ -39,41 +39,6 @@ toggle through by pressing the `r` key.
 
 ![selecting an edge](model_select.png)
 
-### Beveling
-
-The bevel action creates a new copy of the selected element that is inset and
-offset from the original element. Clicking and dragging on an element will
-perform a bevel; the horizontal motion of the cursor controls the amount by
-which the new element shrinks or expands relative to the original element, and
-the vertical motion of the cursor controls the amount by which the new element
-is offset (in the normal direction) from the original element. It is important
-to note that a new element will be created upon click _even if no inset or
-offset is applied_. Therefore, if you're not careful you may end up with
-duplicate elements that are not immediately visible. (To check, you can drag one
-of the vertices mode.)
-
-There are three possible types of bevels:
-
-- __Vertex Bevel:__ The selected vertex _v_ is replaced by a face _f_ whose
-vertices are connected to the edges originally incident on _v_. The new face is
-inset (i.e., shunken or expanded) by a user-controllable amount.
-
-<video src="{{ site.baseurl }}/guide/vertex_bevel.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
-
-- __Edge Bevel:__ The selected edge _e_ is replaced by a face _f_ whose
-vertices are connected to the edges originally incident on the endpoints of _e_.
-The new face is inset and offset by some user-controllable amount, as with the
-vertex bevel.
-
-<video src="{{ site.baseurl }}/guide/edge_bevel.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
-
-- __Face Bevel:__ The selected face _f_ is replaced by a new face _g_, as well
-as a ring of faces around _g_, such that the vertices of _g_ connect to the
-original vertices of _f_. The new face is inset and offset by some
-user-controllable amount.
-
-<video src="{{ site.baseurl }}/guide/face_bevel.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
-
 ### Local Connectivity Editing
 
 In addition to beveling, a variety of commands can be used to alter the
@@ -118,6 +83,42 @@ selected edge _e_ is split at its midpoint, and the new vertex _v_ is connected
 to the two opposite vertices (or one in the case of a surface with boundary).
 
 <video src="{{ site.baseurl }}/guide/edge_split.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
+
+
+### Beveling
+
+The bevel action creates a new copy of the selected element that is inset and
+offset from the original element. Clicking and dragging on an element will
+perform a bevel; the horizontal motion of the cursor controls the amount by
+which the new element shrinks or expands relative to the original element, and
+the vertical motion of the cursor controls the amount by which the new element
+is offset (in the normal direction) from the original element. It is important
+to note that a new element will be created upon click _even if no inset or
+offset is applied_. Therefore, if you're not careful you may end up with
+duplicate elements that are not immediately visible. (To check, you can drag one
+of the vertices mode.)
+
+There are three possible types of bevels:
+
+- __Vertex Bevel:__ The selected vertex _v_ is replaced by a face _f_ whose
+vertices are connected to the edges originally incident on _v_. The new face is
+inset (i.e., shunken or expanded) by a user-controllable amount.
+
+<video src="{{ site.baseurl }}/guide/vertex_bevel.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
+
+- __Edge Bevel:__ The selected edge _e_ is replaced by a face _f_ whose
+vertices are connected to the edges originally incident on the endpoints of _e_.
+The new face is inset and offset by some user-controllable amount, as with the
+vertex bevel.
+
+<video src="{{ site.baseurl }}/guide/edge_bevel.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
+
+- __Face Bevel:__ The selected face _f_ is replaced by a new face _g_, as well
+as a ring of faces around _g_, such that the vertices of _g_ connect to the
+original vertices of _f_. The new face is inset and offset by some
+user-controllable amount.
+
+<video src="{{ site.baseurl }}/guide/face_bevel.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
 
 ### Global Mesh Processing
 
