@@ -65,7 +65,7 @@ Each additional local operation beyond the basic tasks will be worth 1 pts; each
 
 The minimal set of test cases we will evaluate on are:
 
-* Edge flip: sphere and dodecahedron.dae (non-triangle)
+* Edge flip: sphere and dodecahedron.dae (flip must work for non-triangle faces)
 * Edge split: sphere and square (boundary)
 * Edge collapse: sphere and square (boundary)
 * Bevel vertex/edge/face: cube.dae
