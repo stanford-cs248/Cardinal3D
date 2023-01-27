@@ -40,15 +40,17 @@ The basic tasks, and the percentage of the grade (92 pts total) they correspond 
 
 In other words, everyone has to implement **EdgeCollapse**, **EdgeFlip**, **EdgeSplit**, **FaceBevel**, **Triangulation**, **LinearSubdivision**, **Catmull-Clark** and **Simplification**. These features are the bare minimum needed to model interesting subdivision surfaces; **Triangulation** is necessary in order to do the global remeshing task(s). Note that some of the global tasks require that you implement specific local operations! For instance, the implementation of **Simplification** depends on **EdgeCollapse**. In summary, we list all the local operations as follows (these operations are described in the User Guide):
 
-* **VertexBevel**
-* **EdgeBevel**
+* **VertexBevel** - advanced task
+* **EdgeBevel** - advanced task
 * **FaceBevel** - basic task
-* **EraseVertex**
-* **EraseEdge**
+* **EraseVertex** - advanced task
+* **EraseEdge** - advanced task
 * **EdgeCollapse** - basic task
-* **FaceCollapse**
+    * Collapsing a boundary edge - advanced task
+* **FaceCollapse** - advanced task
 * **EdgeFlip** - basic task
 * **EdgeSplit** - basic task
+    * Splitting a boundary edge - advanced task
 
 The global operations, and their dependency on local operations, are as follows:
 
@@ -56,27 +58,31 @@ The global operations, and their dependency on local operations, are as follows:
 * **LinearSubdivision** - basic task
 * **CatmullClarkSubdivision** - basic task
 * **Simplification** - basic task
-* **LoopSubdivision** - depends on **EdgeSplit** and **EdgeFlip**
-* **IsotropicRemeshing** - depends on **EdgeSplit**, **EdgeFlip**, and **EdgeCollapse**
+* **LoopSubdivision** - advanced task, depends on **EdgeSplit** and **EdgeFlip**
+* **IsotropicRemeshing** - advanced task, depends on **EdgeSplit**, **EdgeFlip**, and **EdgeCollapse**
 
 Each additional local operation beyond the basic tasks will be worth 1 pts; each additional global operation will be worth 2 pts. The maximum possible grade on the assignment is 100 pts.
+
+For the advanced tasks on boundary edges, you may test primarily using the "Square" object. Some other options for this would be using particles.dae and hex.dae.
 
 ## Grading
 
 The minimal set of test cases we will evaluate on are:
 
 * Edge flip: sphere and dodecahedron.dae (flip must work for non-triangle faces)
-* Edge split: sphere and square (boundary)
-* Edge collapse: sphere and square (boundary)
-* Bevel vertex/edge/face: cube.dae
-* Erase vertex/edge: sphere
-* Face collapse: sphere
-* Triangulation: dodecahedron.dae
-* Linear Subdivision: sphere
-* Catmull-Clark Subdivision: sphere
+* Edge split: sphere, cow.dae and square (boundary)
+* Edge collapse: sphere, cow.dae and square (boundary)
+* Bevel vertex/edge/face: cube.dae, cylinder
+* Erase vertex/edge: sphere, cow.dae
+* Face collapse: sphere, cow.dae
+* Triangulation: cube.dae, dodecahedron.dae
+* Linear Subdivision: sphere, teapot.dae
+* Catmull-Clark Subdivision: sphere, teapot.dae
 * Simplification: sphere, teapot.dae, cow.dae, dragon2.dae
-* Loop Subdivision: sphere
+* Loop Subdivision: sphere, teapot.dae
 * IsotropicRemeshing: cow.dae, peter.dae
+
+The test cases that end with ".dae" need to be imported from the "Cardinal3D/media/" directory using the "Import Objects" button in Cardinal3D; the ones that do not can be created wthin Cardinal3D using the "New Object" button.
 
 Please note that your code must be robust enough to handle other test cases as well.
 
