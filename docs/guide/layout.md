@@ -6,6 +6,8 @@ permalink: /guide/layout/
 
 # Layout
 
+[Back to User Guide main page](..)
+
 This is the main scene editing mode in Cardinal3D, and does not contain tasks for the student to implement. 
 This mode allows you to load full scenes from disk, create or load new objects, export your scene (COLLADA format), and edit transformations that place each object into your scene.
 
