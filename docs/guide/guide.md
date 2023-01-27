@@ -10,7 +10,7 @@ permalink: /guide/
 
 The basic paradigm in Cardinal3D is that there are six different _modes_, each
 of which lets you perform certain class of actions. For instance, in `Model` mode, you
-can perform actions associated with modeling, such as moving mesh elements and performing global mesh operations. (In assignment 2, you will spend most of your time in `Model` mode.)
+can perform actions associated with modeling, such as moving mesh elements and performing global mesh operations. (In assignment 2, you will spend most of your time in `Model` mode.) In `Render` mode you'll be able to render the current model with a ray tracer (once you implement one in Assignment 3).
 When in `Animate` mode, you can perform actions associated with animation. Etc. 
 Within a given mode, you can
 switch between actions by hitting the appropriate buttons or keys; keyboard commands are
