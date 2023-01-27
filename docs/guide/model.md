@@ -44,7 +44,7 @@ toggle through by pressing the `r` key.
 A variety of commands can be used to alter the
 connectivity of the mesh (for instance, splitting or collapsing edges). These
 commands are applied by selecting a mesh element (in any mode) and pressing the
-appropriate key, as listed below. Local mesh editing operations include:
+appropriate UI button or key, as listed below. Local mesh editing operations include:
 
 - __Erase Vertex:__ The selected vertex _v_ together with all incident edges
 and faces will be replaced with a single face _f_, that is the union of all
