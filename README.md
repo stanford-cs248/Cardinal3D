@@ -1,4 +1,4 @@
-# Stanford CS248A Assignment 2: MeshEdit
+# Stanford CS248A Assignment 2 (Mesh Editing)
 
 We have created a [Wiki](https://stanford-cs248.github.io/Cardinal3D/) that will be the primary source of information about this assignment. On that page you will find all the details about what you need to implement, etc. This document only contains administrative details about building the starter code, grading, and submission.
 
