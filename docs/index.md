@@ -10,12 +10,14 @@ Welcome to Cardinal3D! This 3D graphics software package includes components for
 editing and realistic path tracin. Implementing functionality in these areas
 constitutes coursework for CS248A (Computer Graphics: Rendering, Geometry, and Imange Manipulation) at Stanford University
 
-These pages describe how to set up and use Cardinal3D. Start here!
+These pages describe how to set up with Cardinal3D. Start here!
 - [Git Setup](git): create a private git mirror that can pull changes from Cardinal3D (optional). 
 - [Building Cardinal3D](build): build and run Cardinal3D on various platforms.
+
+Running Cardinal3D: read here to understand how to use the software. (Not all functionality will work as described until you implement it!)
 - [User Guide](guide): learn the intended functionality for end users.
 
-The developer manual describes what you must implement to complete Cardinal3D. It is organized in terms of the main components of the software. Note that only MeshEdit and PathTracer are given to students in CS248A, but feel free to check our Animation to have more fun with Cardinal3D.
+The developer manual describes what you must implement to complete Cardinal3D. It is organized in terms of the main components of the software. Note that only MeshEdit and PathTracer are given to students in CS248A as assignments, but feel free to check out the Animation section to have more fun with Cardinal3D.
 - [MeshEdit](meshedit)
 - [PathTracer](pathtracer)
 - [Animation](animation)
