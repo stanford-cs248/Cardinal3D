@@ -66,7 +66,7 @@ only two edges).
 
 <video src="{{ site.baseurl }}/guide/collapse_edge.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>
 
-- Face Collapse: The selected face _f_ is replaced by a single vertex _v_.
+- __Face Collapse:__ The selected face _f_ is replaced by a single vertex _v_.
 All edges previously connected to vertices of _f_ are now connected directly to
 _v_.
 
@@ -176,10 +176,10 @@ preserve the appearance of the original mesh as closely as possible.
 | `r` | Use the `Rotate` tool. |
 | `s` | Use the `Scale` tool. |
 | `b` | Use the `Bevel` tool. |
-| `v`                 | Select the current halfedge's vertex                |
-| `e`                 | Select the current halfedge's edge                |
-| `f`                 | Select the current halfedge's face                |
-| `t`                 | Select the current halfedge's twin                |
-| `n`                 | Select the current halfedge's next                |
-| `h`                 | Select the current element's halfedge                |
-| `delete` | Erase the currently selected vertex or edge. |
+| `v` | Select the current halfedge's vertex                |
+| `e` | Select the current halfedge's edge                  |
+| `f` | Select the current halfedge's face                  |
+| `t` | Select the current halfedge's twin                  |
+| `n` | Select the current halfedge's next                  |
+| `h` | Select the current element's halfedge               |
+| `delete` | Erase the currently selected vertex or edge.   |
