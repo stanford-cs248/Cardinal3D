@@ -39,13 +39,15 @@ You can open the preferences window from the edit option in the menu bar.
 
 As is typical, all operations on scene objects, meshes, etc. are un and re-doable using Control/Command-Z to undo and Control/Command-Y to redo. These actions are also available from the `Edit` option in the menu bar.
 
-## Specific Modes (that you may use in CS248A)
+## CS248A-Specific Modes (related to CS248A assignments)
 
 - [Layout](layout)
 - [Model](model)
 - [Render](render)
 
-## Other modes (that are in the codebase for non-CS248A reasons, and you might want to explore, or even implement, on your own)
+## Other Modes ##
+
+These additional modes are in the codebase for non-CS248A reasons, and you might want to explore, or even implement, on your own.
 
 - [Rig](rig)
 - [Animate](animate)
