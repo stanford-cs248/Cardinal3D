@@ -21,6 +21,11 @@ This codebase should compile on Linux, Mac OS X, and Windows on a typical enviro
 
 When you have successfully built your code, you should get an executable named `Cardinal3D`. Upon starting the program, it should be in model mode. The [User Guide](https://stanford-cs248.github.io/Cardinal3D/guide/) details how to use the interface. 
 
+### Usage Notes
+* Any mesh with .dae can be imported from media folder, others can be created through "New Object".
+
+* Editing the sphere mesh: click on the sphere -> click "Edit Mesh" -> Dropdown select "None" -> click Smaller "Edit Mesh".
+
 
 ## Evaluation
 For this assignment, you will implement methods in `meshEdit.cpp`.
@@ -58,6 +63,24 @@ The global operations, and their dependency on local operations, are as follows:
 
 Each additional local operation beyond the basic tasks will be worth 1 pts; each additional global operation will be worth 2 pts. The maximum possible grade on the assignment is 100 pts.
 
+## Grading
+
+The minimal set of test cases we will evaluate on are:
+
+* Edge flip: sphere and dodecahedron.dae (non-triangle)
+* Edge split: sphere and square (boundary)
+* Edge collapse: sphere and square (boundary)
+* Bevel vertex/edge/face: cube.dae
+* Erase vertex/edge: sphere
+* Face collapse: sphere
+* Triangulation: dodecahedron.dae
+* Linear Subdivision: sphere
+* Catmull-Clark Subdivision: sphere
+* Simplification: sphere, teapot.dae, cow.dae, dragon2.dae
+* Loop Subdivision: sphere
+* IsotropicRemeshing: cow.dae, peter.dae
+
+Please note that your code must be robust enough to handle other test cases as well.
 
 #### America's Next Top 3D Model
 Every student is required to submit a 3D model created from cube.dae (or other primitives) using their implementation of Cardinal3D, which will be automatically entered into a class-wide 3D modeling competition. Models will be critiqued and evaluated based on both technical sophistication and aesthetic beauty. Note: Use of any other 3D package (e.g., free or commercial 3D modelers like Maya or Blender) is strictly prohibited! This model must be created by opening cube.dae, applying the operations implemented as part of the assignment, and saving the result.
