@@ -10,7 +10,7 @@ permalink: /guide/
 
 The basic paradigm in Cardinal3D is that there are six different _modes_, each
 of which lets you perform certain class of actions. For instance, in `Model` mode, you
-can perform actions associated with modeling, such as moving mesh elements and performing global mesh operations. 
+can perform actions associated with modeling, such as moving mesh elements and performing global mesh operations. (In assignment 2, you will spend most of your time in `Model` mode.)
 When in `Animate` mode, you can perform actions associated with animation. Etc. 
 Within a given mode, you can
 switch between actions by hitting the appropriate key; keyboard commands are
@@ -39,11 +39,14 @@ You can open the preferences window from the edit option in the menu bar.
 
 As is typical, all operations on scene objects, meshes, etc. are un and re-doable using Control/Command-Z to undo and Control/Command-Y to redo. These actions are also available from the `Edit` option in the menu bar.
 
-## Specific Modes
+## Specific Modes (that you may use in CS248A)
 
 - [Layout](layout)
 - [Model](model)
 - [Render](render)
+
+## Other modes (that are in the codebase for non-CS248A reasons, and you might want to explore, or even implement, on your own)
+
 - [Rig](rig)
 - [Animate](animate)
 - [Simulate](simulate)
