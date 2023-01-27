@@ -41,7 +41,7 @@ toggle through by pressing the `r` key.
 
 ### Local Connectivity Editing
 
-In addition to beveling, a variety of commands can be used to alter the
+A variety of commands can be used to alter the
 connectivity of the mesh (for instance, splitting or collapsing edges). These
 commands are applied by selecting a mesh element (in any mode) and pressing the
 appropriate key, as listed below. Local mesh editing operations include:
