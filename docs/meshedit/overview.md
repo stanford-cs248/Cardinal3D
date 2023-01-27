@@ -10,7 +10,9 @@ MeshEdit is the first major component of Cardinal3D, which performs 3D modeling,
 
 The `media/` subdirectory of the project contains a variety of meshes and scenes on which the implementation may be tested. The simple `cube.dae` input should be treated as the primary test case -- when properly implemented MeshEdit contains all of the modeling tools to transform this starting mesh into a variety of functional and beautiful geometries. For further testing, a collection of other models are also included in this directory, but it is not necessarily reasonable to expect every algorithm to be effective on every input. The implementer must use judgement in selecting meaningful test inputs for the algorithms in MeshEdit.
 
-The following sections contain guidelines for implementing the functionality of MeshEdit:
+Here's a link to the [User Guide](../model) for `Model` mode of Cardinal3D, which define *what* key operations should behave.
+
+The following sections contain guidelines for implementing this functionality:
 
 - [Halfedge Mesh](halfedge)
 - [Local Mesh Operations](local)
