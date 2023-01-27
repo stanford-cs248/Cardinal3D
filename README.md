@@ -9,8 +9,8 @@ The assignment is due Feb. 9 at 11:59 PM.
 ## Submission Instructions
 Please zip the following files and upload your zipped file to Gradescope.
 
-* Cardinal3D/src folder
-* model.dae
+* `Cardinal3D/src` folder
+* `model.dae`
 * writeup (.txt, .doc, .pdf)
 
 One team only needs one submission, please tag your teammates in your submission.
