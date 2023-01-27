@@ -30,7 +30,7 @@ When you have successfully built your code, you should get an executable named `
 ## Evaluation
 For this assignment, you will implement methods in `meshEdit.cpp`.
 
-The User Guide on the wiki describes a large number of features that are in principle available in MeshEdit mode. You have to successfully implement a subset of the features as basic tasks, implementing additional features beyond the basic tasks will earn you extra credit points.
+The User Guide on the wiki describes a large number of features that are in principle available in MeshEdit mode. You have to successfully implement a subset of the features as __basic tasks__, implementing additional features beyond the basic tasks will earn you extra points.
 
 The basic tasks, and the percentage of the grade (92 pts total) they correspond to, are:
 
@@ -59,8 +59,6 @@ The global operations, and their dependency on local operations, are as follows:
 * **LoopSubdivision** - depends on **EdgeSplit** and **EdgeFlip**
 * **IsotropicRemeshing** - depends on **EdgeSplit**, **EdgeFlip**, and **EdgeCollapse**
 
-<!-- You should clearly indicate which features you chose (including those implemented for extra credit) by putting this information in your writeup (described below). You might find it worthwhile using the checkConsistency member function of the HalfedgeMesh class to help debug your operations. -->
-
 Each additional local operation beyond the basic tasks will be worth 1 pts; each additional global operation will be worth 2 pts. The maximum possible grade on the assignment is 100 pts.
 
 ## Grading
@@ -83,6 +81,7 @@ The minimal set of test cases we will evaluate on are:
 Please note that your code must be robust enough to handle other test cases as well.
 
 #### America's Next Top 3D Model
+
 Every student is required to submit a 3D model created from cube.dae (or other primitives) using their implementation of Cardinal3D, which will be automatically entered into a class-wide 3D modeling competition. Models will be critiqued and evaluated based on both technical sophistication and aesthetic beauty. Note: Use of any other 3D package (e.g., free or commercial 3D modelers like Maya or Blender) is strictly prohibited! This model must be created by opening cube.dae, applying the operations implemented as part of the assignment, and saving the result.
 
 NOTE: We are expecting some high-quality output here---or at least some creativity! Don't just brush this one off. :-)
@@ -90,7 +89,8 @@ NOTE: We are expecting some high-quality output here---or at least some creativi
 Include this model in the root directory of your submission as model.dae.
 
 ## Writeup
-Additionally, you will submit a short document explaining what you have implemented, and any particular details of your submission. If your submission includes any implementations which are not entirely functional, please detail what works and what doesn't, along with where you got stuck. This document does not need to be long; correctly implemented features may simply be listed, and incomplete features should be described in a few sentences at most.
+
+Additionally, we want you to submit a short document explaining what you have implemented, and any particular details of your submission. If your submission includes any implementations which are not entirely functional, please detail what works and what doesn't, along with where you got stuck. This document does not need to be long; correctly implemented features may simply be listed, and incomplete features should be described in a few sentences at most.
 
 The writeup can be a pdf, markdown, or plaintext file. Include it in the root directory of your submission as writeup.pdf, writeup.md, or writeup.txt.
 
@@ -98,4 +98,4 @@ If we cannot find this writeup in your submission, no addtional implemented oper
 
 ## Acknowledgement
 
-CS248 course staff would like to thank Professor Keenan Crane and his course assistants for the initial development of assignment materials.
+CS248A course staff would like to thank Professor Keenan Crane and his course assistants for the initial development of assignment materials.
