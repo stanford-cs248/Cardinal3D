@@ -6,7 +6,7 @@ permalink: /meshedit/edge_flip
 
 # Edge Flip Tutorial
 
-Here we provide a step-by-step guide to implementing a simplified version of the _EdgeFlip_ operation for a pair of triangles---the final version, however, must be implemented for general polygons (i.e., any _n_-gon). The basic strategy for implementing the other local operations is quite similar to the procedure outlined below.
+Here we provide a step-by-step guide to implementing a simplified version of the _EdgeFlip_ operation for a pair of triangles--- your final version, however, __must be implemented to work for general polygons (i.e., any _n_-gon).__ The basic strategy for implementing the other local operations is quite similar to the procedure outlined below, but we want you to reason through how to generalize the implementation below to n-gons.
 
 **Note:** if you're not familiar with C++, you should definitely take a moment to learn about the [standard library class](http://en.cppreference.com/w/cpp/container/vector) `std::vector`, especially the method `push_back()`, which will make it easy to accumulate a list of pointers as you walk around a polygon, vertex, etc.
 
