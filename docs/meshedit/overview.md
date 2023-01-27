@@ -6,7 +6,7 @@ permalink: /meshedit/
 
 # MeshEdit Overview
 
-MeshEdit is the first major component of Cardinal3D, which performs 3D modeling, subdivision, and mesh processing. When implementation of this tool is completed, it will enable the user to transform a simple cube model into beautiful, organic 3D surfaces described by high-quality polygon meshes. This tool can import, modify, and export industry-standard COLLADA files, allowing Cardinal3D to interact with the broader ecosystem of computer graphics software.
+MeshEdit is the first major component of Cardinal3D, which performs 3D modeling, subdivision, and mesh processing. When implementation of this tool is completed, it will enable the user to transform a simple cube model into beautiful, organic 3D surfaces described by high-quality polygon meshes. This tool can import, modify, and export industry-standard [COLLADA](https://www.khronos.org/collada/) files, allowing Cardinal3D to interact with the broader ecosystem of computer graphics software.
 
 The `media/` subdirectory of the project contains a variety of meshes and scenes on which the implementation may be tested. The simple `cube.dae` input should be treated as the primary test case -- when properly implemented MeshEdit contains all of the modeling tools to transform this starting mesh into a variety of functional and beautiful geometries. For further testing, a collection of other models are also included in this directory, but it is not necessarily reasonable to expect every algorithm to be effective on every input. The implementer must use judgement in selecting meaningful test inputs for the algorithms in MeshEdit.
 
