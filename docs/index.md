@@ -7,26 +7,24 @@ permalink: /
 # Cardinal3D
 
 Welcome to Cardinal3D! This 3D graphics software package includes components for interactive mesh
-editing, realistic path tracing, and dynamic animation. Implementing functionality in each of these areas
-constitutes the majority of the coursework for CS248 (Interactive Computer Graphics) at Stanford University
+editing and realistic path tracin. Implementing functionality in these areas
+constitutes coursework for CS248A (Computer Graphics: Rendering, Geometry, and Imange Manipulation) at Stanford University
 
 These pages describe how to set up and use Cardinal3D. Start here!
 - [Git Setup](git): create a private git mirror that can pull changes from Cardinal3D (optional). 
 - [Building Cardinal3D](build): build and run Cardinal3D on various platforms.
 - [User Guide](guide): learn the intended functionality for end users.
 
-The developer manual describes what you must implement to complete Cardinal3D. It is organized under the three main components of the software. Note that only MeshEdit is necessary for the assignment 2, but feel free to check the other two to have more fun with Cardinal3D. The Animation or PathTracer components are possible projects to attempt as final project.
+The developer manual describes what you must implement to complete Cardinal3D. It is organized in terms of the main components of the software. Note that only MeshEdit and PathTracer are given to students in CS248A, but feel free to check our Animation to have more fun with Cardinal3D.
 - [MeshEdit](meshedit)
 - [PathTracer](pathtracer)
 - [Animation](animation)
-- [PathTracer(CMU version)](pathtracer_extra)
-**Note that the CMU version provides richer visualizations/details that may be helpful for understanding. However, some tasks are different and the starter code referenced in the doc may also be slightly different, so be careful about that!**
 
 ## Project Philosophy
 
-Welcome to your first day of work at Cardinal Industries! Over the next few months
-you will implement core features in Cardinal Industries' flagship product
-Cardinal3D, which is a modern package for 3D modeling, rendering, and animation.
+Welcome to your first day of work at Cardinal Industries! 
+You are tasked to implement core features in Cardinal Industries' flagship product
+Cardinal3D, which is a modern package for 3D modeling and rendering.
 In terms of basic structure, this package doesn't look much different from
 "real" 3D tools like Maya, Blender, modo, or Houdini. Your overarching goal is
 to use the developer manual to implement a package that
@@ -60,11 +58,6 @@ let the program crash!
 surprise](https://en.wikipedia.org/wiki/Principle_of_least_astonishment). A user
 should be able to expect that things behave more or less as they are described
 in the User Guide. 
-*   You should not use an algorithm whose performance is [asymptotically
-worse](https://en.wikipedia.org/wiki/Asymptotic_computational_complexity) just
-because it makes your code easier to write (for instance, using [bubble
-sort](https://en.wikipedia.org/wiki/Bubble_sort) rather than [merge
-sort](https://en.wikipedia.org/wiki/Merge_sort) on large data sets). 
 *   Finally, you should take pride in your craft. Beautiful things just tend to work better.
 
 Just to reiterate the main point above:
