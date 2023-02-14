@@ -28,7 +28,7 @@ The starter code can log the results of raytracing for visualization and debuggi
 
 You can visualize the result of the generated rays by checking the box for "Logged rays" under Visualize in the app and then **start render**(Open Render Window -> Start Render). After running the ray tracer, rays will be shown as lines in visualizer. Be sure to wait for rendering to complete so you see all rays while visualizing. A message is printed to standard output on completion. 
 
-![logged_rays](new_results/log_rays.png)
+![logged_rays](new_results/logged_rays.png)
 
 **Extra credit ideas:**
 
