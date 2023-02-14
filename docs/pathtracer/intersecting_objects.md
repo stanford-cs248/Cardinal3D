@@ -43,10 +43,9 @@ Once you've successfully implemented triangle intersection, you will be able to 
 
 While you are working with `student/tri_mesh.cpp`, you should implement `Triangle::bbox` as well, which is important for Task 3.
 
+Tip: [Visualization of normals](visualization_of_normals.md) might be very helpful with debugging.
+
 ### **Step 2: Intersecting Spheres (EXTRA CREDIT ONLY)**
 
 As you did with triangles, implement the `hit` routines for the `Sphere` class in `student/shapes.cpp`. Remember that your intersection tests should respect the ray's `time_bound`.
 
----
-
-[Visualization of normals](visualization_of_normals.md) might be very helpful with debugging.
