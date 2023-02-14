@@ -5,6 +5,7 @@
 
 namespace PT {
 
+// construct BVH hierarchy given a vector of prims
 template<typename Primitive>
 void BVH<Primitive>::build(std::vector<Primitive>&& prims, size_t max_leaf_size) {
 
@@ -18,34 +19,102 @@ void BVH<Primitive>::build(std::vector<Primitive>&& prims, size_t max_leaf_size)
     //      BBox bbox() const;
     //      Trace hit(const Ray& ray) const;
     // Hence, you may call bbox() and hit() on any value of type Primitive.
-    //
-    // Finally, also note that while a BVH is a tree structure, our BVH nodes don't
-    // contain pointers to children, but rather indicies. This is because instead
-    // of allocating each node individually, the BVH class contains a vector that
-    // holds all of the nodes. Hence, to get the child of a node, you have to
-    // look up the child index in this vector (e.g. nodes[node.l]). Similarly,
-    // to create a new node, don't allocate one yourself - use BVH::new_node, which
-    // returns the index of a newly added node.
 
-    // Keep these
+    // Keep these two lines of code in your solution. They clear the list of nodes and
+    // initialize member variable 'primitives' as a vector of the scene prims
     nodes.clear();
     primitives = std::move(prims);
 
     // TODO (PathTracer): Task 3
-    // Construct a BVH from the given vector of primitives and maximum leaf
-    // size configuration. The starter code builds a BVH with a
-    // single leaf node (which is also the root) that encloses all the
-    // primitives.
+    // Modify the code ahead to construct a BVH from the given vector of primitives and maximum leaf
+    // size configuration.
+    //
+    // Please use the SAH as described in class.  We recomment the binned build from lecture.
+    // In general, here is a rough sketch:
+    //
+    //  For each axis X,Y,Z:
+    //     Try possible splits along axis, evaluate SAH for each
+    //  Take minimum cost across all axes.
+    //  Partition primitives into a left and right child group
+    //  Compute left and right child bboxes
+    //  Make the left and right child nodes.
+    //
+    //
+    // While a BVH is conceptually a tree structure, the BVH class uses a single vector (nodes)
+    // to store all the nodes. Therefore, BVH nodes don't contain pointers to child nodes,
+    // but rather the indices of the
+    // child nodes in this array. Hence, to get the child of a node, you have to
+    // look up the child index in this vector (e.g. nodes[node.l]). Similarly,
+    // to create a new node, don't allocate one yourself - use BVH::new_node, which
+    // returns the index of a newly added node.
+    //
+    // As an example of how to make nodes, the starter code below builds a BVH with a
+    // root node that encloses all the primitives and its two descendants at Level 2.
+    // For now, the split is hardcoded such that the first primitive is put in the left
+    // child of the root, and all the other primitives are in the right child.
+    // There are no further descendants.
 
-    // Replace these
-    BBox box;
-    for(const Primitive& prim : primitives) box.enclose(prim.bbox());
+    // edge case
+    if(primitives.empty()) {
+        return;
+    }
 
-    new_node(box, 0, primitives.size(), 0, 0);
-    root_idx = 0;
+    // compute bounding box for all primitives
+    BBox bb;
+    for(size_t i = 0; i < primitives.size(); ++i) {
+        bb.enclose(primitives[i].bbox());
+    }
+
+    // set up root node (root BVH). Notice that it contains all primitives.
+    size_t root_node_addr = new_node();
+    Node& node = nodes[root_node_addr];
+    node.bbox = bb;
+    node.start = 0;
+    node.size = primitives.size();
+
+    // Create bounding boxes for children
+    BBox split_leftBox;
+    BBox split_rightBox;
+
+    // compute bbox for left child
+    Primitive& p = primitives[0];
+    BBox pbb = p.bbox();
+    split_leftBox.enclose(pbb);
+
+    // compute bbox for right child
+    for(size_t i = 1; i < primitives.size(); ++i) {
+        Primitive& p = primitives[i];
+        BBox pbb = p.bbox();
+        split_rightBox.enclose(pbb);
+    }
+
+    // Note that by construction in this simple example, the primitives are
+    // contiguous as required. But in the students real code, students are
+    // responsible for reorganizing the primitives in the primitives array so that
+    // after a SAH split is computed, the chidren refer to contiguous ranges of primitives.
+
+    size_t startl = 0;  // starting prim index of left child
+    size_t rangel = 1;  // number of prims in left child
+    size_t startr = startl + rangel;  // starting prim index of right child
+    size_t ranger = primitives.size() - rangel; // number of prims in right child
+
+    // create child nodes
+    size_t node_addr_l = new_node();
+    size_t node_addr_r = new_node();
+    nodes[root_node_addr].l = node_addr_l;
+    nodes[root_node_addr].r = node_addr_r;
+
+    nodes[node_addr_l].bbox = split_leftBox;
+    nodes[node_addr_l].start = startl;
+    nodes[node_addr_l].size = rangel;
+
+    nodes[node_addr_r].bbox = split_rightBox;
+    nodes[node_addr_r].start = startr;
+    nodes[node_addr_r].size = ranger;
 }
 
-template<typename Primitive> Trace BVH<Primitive>::hit(const Ray& ray) const {
+template<typename Primitive>
+Trace BVH<Primitive>::hit(const Ray& ray) const {
 
     // TODO (PathTracer): Task 3
     // Implement ray - BVH intersection test. A ray intersects
@@ -68,7 +137,8 @@ BVH<Primitive>::BVH(std::vector<Primitive>&& prims, size_t max_leaf_size) {
     build(std::move(prims), max_leaf_size);
 }
 
-template<typename Primitive> BVH<Primitive> BVH<Primitive>::copy() const {
+template<typename Primitive>
+BVH<Primitive> BVH<Primitive>::copy() const {
     BVH<Primitive> ret;
     ret.nodes = nodes;
     ret.primitives = primitives;
@@ -76,7 +146,8 @@ template<typename Primitive> BVH<Primitive> BVH<Primitive>::copy() const {
     return ret;
 }
 
-template<typename Primitive> bool BVH<Primitive>::Node::is_leaf() const {
+template<typename Primitive>
+bool BVH<Primitive>::Node::is_leaf() const {
     return l == r;
 }
 
@@ -92,16 +163,19 @@ size_t BVH<Primitive>::new_node(BBox box, size_t start, size_t size, size_t l, s
     return nodes.size() - 1;
 }
 
-template<typename Primitive> BBox BVH<Primitive>::bbox() const {
+template<typename Primitive>
+BBox BVH<Primitive>::bbox() const {
     return nodes[root_idx].bbox;
 }
 
-template<typename Primitive> std::vector<Primitive> BVH<Primitive>::destructure() {
+template<typename Primitive>
+std::vector<Primitive> BVH<Primitive>::destructure() {
     nodes.clear();
     return std::move(primitives);
 }
 
-template<typename Primitive> void BVH<Primitive>::clear() {
+template<typename Primitive>
+void BVH<Primitive>::clear() {
     nodes.clear();
     primitives.clear();
 }

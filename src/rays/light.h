@@ -14,10 +14,10 @@ namespace PT {
 
 struct Light_Sample {
 
-    Spectrum radiance;
-    Vec3 direction;
-    float distance;
-    float pdf;
+    Spectrum radiance; // Radiance from the light
+    Vec3 direction;    // direction to light
+    float distance;    // distance to light from starting point
+    float pdf;         // probability density of sample
 
     void transform(const Mat4& T) {
         direction = T.rotate(direction);

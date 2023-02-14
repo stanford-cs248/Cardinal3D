@@ -8,10 +8,15 @@ namespace Samplers {
 Vec2 Rect::Uniform::sample(float& pdf) const {
 
     // TODO (PathTracer): Task 1
-    // Generate a uniformly random point on a rectangle of size size.x * size.y
-    // Tip: RNG::unit()
+    // Generate a uniformly random point on a rectangle of size (size.x by size.y)
 
-    pdf = 1.0f; // the PDF should integrate to 1 over the whole rectangle
+    // Tip: consider using RNG::unit()  (see util/rand.h)
+
+    // PDF is the probability density of the chosen sample
+    // the PDF should integrate to 1 over the whole rectangle
+    pdf = 1.0f; 
+
+    // Return the randomly generated point
     return Vec2();
 }
 

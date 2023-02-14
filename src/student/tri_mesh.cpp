@@ -19,15 +19,22 @@ BBox Triangle::bbox() const {
 Trace Triangle::hit(const Ray& ray) const {
 
     // Vertices of triangle - has postion and surface normal
+    // See rays/tri_mesh.h for a description of this struct
+    
     Tri_Mesh_Vert v_0 = vertex_list[v0];
     Tri_Mesh_Vert v_1 = vertex_list[v1];
     Tri_Mesh_Vert v_2 = vertex_list[v2];
+
+    // here just to avoid unused variable warnings, students should remove the following three lines.
     (void)v_0;
     (void)v_1;
     (void)v_2;
-
+    
     // TODO (PathTracer): Task 2
-    // Intersect this ray with a triangle defined by the three above points.
+    // Intersect this ray with a triangle defined by the above three points.
+    // Intersection should yield a ray t-value, and a hit point (u,v) on the surface of the triangle
+
+    // You'll need to fill in a "Trace" struct describing information about the hit (or lack of hit)
 
     Trace ret;
     ret.origin = ray.point;
