@@ -6,7 +6,7 @@ permalink: /pathtracer/bounding_volume_hierarchy
 
 # (Task 3) Bounding Volume Hierarchy
 
-In this task you will implement a bounding volume hierarchy (BHV) that accelerates ray-scene intersection. Most of this work will be in `student/bvh.inl`. Note that this file has an unusual extension (`.inl` = inline) because it is an implementation file for a template class. This means `bvh.h` must `#include` it, so all code that includes `bvh.h` will also include `bvh.inl`.
+In this task you will implement a bounding volume hierarchy (BVH) that accelerates ray-scene intersection. Most of this work will be in `student/bvh.inl`. Note that this file has an unusual extension (`.inl` = inline) because it is an implementation file for a template class. This means `bvh.h` must `#include` it, so all code that includes `bvh.h` will also include `bvh.inl`.
 
 We are going to guide you toward implementing a BVH that is laid out in memory in a manner that speeds up the performance of ray tracing. This will be a little more complicated than a naive BVH tree implementation, but you'll thank us later when you see your render times. ;-)
 
@@ -28,11 +28,11 @@ Implement `BBox::hit` in `student/bbox.cpp`. This needs to be an implementation 
 
 ## Step 1: BVH Construction
 
-Your job is to construct a `BVH` using the [Surface Area Heuristic](https://gfxcourses.stanford.edu/cs248a/winter23/lecture/accelstructure/slide_47) discussed in class. Tree construction will occur when an instance of the BVH object is constructed.
+Your job is to construct a `BVH` using the [Surface Area Heuristic](https://gfxcourses.stanford.edu/cs248a/winter23/lecture/accelstructure/slide_47) (SAH) discussed in class. Tree construction will occur when an instance of the BVH object is constructed. Please refer to the in-code comments for a more detailed description of how to construct your BVH using the SAH.
 
 ## Step 2: Ray-BVH Intersection
 
-Implement the ray-BVH intersection routine `Trace BVH<Primitive>::hit(const Ray& ray)`. You may wish to consider the node visit order optimizations we discussed in class. Once complete, your renderer should be able to render all of the test scenes in a reasonable amount of time.  Please refer to the in-code comments for a more detailed description of how to construct your BVH.
+Implement the ray-BVH intersection routine `Trace BVH<Primitive>::hit(const Ray& ray)`. You may wish to consider the node visit order optimizations we discussed in class. Once complete, your renderer should be able to render all of the test scenes in a reasonable amount of time.  
 
 ## Visualization
 
