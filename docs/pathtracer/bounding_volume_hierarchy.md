@@ -32,7 +32,7 @@ Your job is to construct a `BVH` using the [Surface Area Heuristic](https://gfxc
 
 ## Step 2: Ray-BVH Intersection
 
-Implement the ray-BVH intersection routine `Trace BVH<Primitive>::hit(const Ray& ray)`. You may wish to consider the node visit order optimizations we discussed in class. Once complete, your renderer should be able to render all of the test scenes in a reasonable amount of time. 
+Implement the ray-BVH intersection routine `Trace BVH<Primitive>::hit(const Ray& ray)`. You may wish to consider the node visit order optimizations we discussed in class. Once complete, your renderer should be able to render all of the test scenes in a reasonable amount of time.  Please refer to the in-code comments for a more detailed description of how to construct your BVH.
 
 ## Visualization
 
