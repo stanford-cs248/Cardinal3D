@@ -19,7 +19,7 @@ __How to use Cardinal3D:__ read here to understand how to use the software. (But
 
 __How to implement Cardinal3D:__ The developer manual describes what you must implement to complete Cardinal3D. It is organized in terms of the main components of the software. Note that only MeshEdit and PathTracer are given to students in CS248A as assignments, but feel free to check out the Animation section to have more fun with Cardinal3D.
 - [MeshEdit](meshedit) (Assignment 2)
-- [PathTracer](pathtracer)
+- [PathTracer](pathtracer) (Assignment 3)
 - [Animation](animation)
 
 ## Project Philosophy
