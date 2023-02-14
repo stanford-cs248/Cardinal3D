@@ -8,7 +8,9 @@ permalink: /pathtracer/camera_rays
 
 "Camera rays" emanate from the camera and measure the amount of scene radiance that reaches a point on the camera's sensor plane. (Given a point on the virtual sensor plane, there is a corresponding camera ray that is traced into the scene.)
 
-To get started take a look at `Pathtracer::trace_pixel` in `student/pathtracer.cpp`. The job of this function is to compute the radiance arriving at a point within pixel of the image. Conveniently, we've given you a function `Pathtracer::trace_ray(r)` that provides a measurement of incoming scene radiance along the direction given by ray `r`. See `lib/ray.h` for the interface of ray (`r.point` is the ray origin, `r.dir` is the ray direction).  __Your job in Task 1 is to generate the ray `r` that is passed to `trace_ray(r)`.__
+To get started take a look at `Pathtracer::trace_pixel` in `student/pathtracer.cpp`. The job of this function is to compute the radiance arriving at a point within pixel of the image. Conveniently, we've given you a function `Pathtracer::trace_ray(r)` that provides a measurement of incoming scene radiance along the direction given by ray `r`. See `lib/ray.h` for the interface of ray (`r.point` is the ray origin, `r.dir` is the ray direction).  
+
+__Your job in Task 1 is to generate the ray `r` that is passed to `trace_ray(r)`.__
 
 Here's how to do it:
 
