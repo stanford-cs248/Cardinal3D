@@ -22,11 +22,11 @@ There are also two helper functions in the BSDF class in `student/bsdf.cpp` that
 * Note that in `reflect` and `refract`, both the `out_dir` and the returned in-direction are pointing away from the intersection point of the ray and the surface, as illustrated in this picture below.
 ![rays_dir](rays_dir.png)
 
-## Step 1
+## Step 1: Perfect Mirror Surfaces
 
 Implement the class `BSDF_Mirror` which represents a material with perfect specular reflection (a perfect mirror). You should Implement `BSDF_Mirror::sample`, `BSDF_Mirror::evaluate`, and `reflect`. **(Hint: what should the pdf sampled by  `BSDF_Mirror::sample` be? What should the reflectance function `BSDF_Mirror::evalute` be?)**
 
-## Step 2 (EXTRA CREDIT)
+## Step 2: Transmissive Surfaces (EXTRA CREDIT)
 
 Implement the class `BSDF_Glass` which is a glass-like material that both reflects light and transmit light. As discussed in class the fraction of light that is reflected and transmitted through glass is given by the dielectric Fresnel equations.
 
