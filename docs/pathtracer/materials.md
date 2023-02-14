@@ -22,11 +22,11 @@ There are also two helper functions in the BSDF class in `student/bsdf.cpp` that
 * Note that in `reflect` and `refract`, both the `out_dir` and the returned in-direction are pointing away from the intersection point of the ray and the surface, as illustrated in this picture below.
 ![rays_dir](rays_dir.png)
 
-## Step 1
+## Step 1: Perfect Mirror Surfaces
 
 Implement the class `BSDF_Mirror` which represents a material with perfect specular reflection (a perfect mirror). You should Implement `BSDF_Mirror::sample`, `BSDF_Mirror::evaluate`, and `reflect`. **(Hint: what should the pdf sampled by  `BSDF_Mirror::sample` be? What should the reflectance function `BSDF_Mirror::evalute` be?)**
 
-## Step 2
+## Step 2: Transmissive Surfaces (EXTRA CREDIT)
 
 Implement the class `BSDF_Glass` which is a glass-like material that both reflects light and transmit light. As discussed in class the fraction of light that is reflected and transmitted through glass is given by the dielectric Fresnel equations.
 
@@ -36,7 +36,7 @@ Specifically your implementation should:
 * Implement `BSDF_refract::sample` as well as `BSDF_Glass::sample`. Your implementation should use the Fresnel equations to compute the fraction of reflected light and the fraction of transmitted light. The returned ray sample should be either a reflection ray or a refracted ray, with the probability of which type of ray to use for the current path proportional to the Fresnel reflectance. (e.g., If the Fresnel reflectance is 0.9, then you should generate a reflection ray 90% of the time. What should the pdf be in this case?) Note that you can also use [Schlick's approximation](https://en.wikipedia.org/wiki/Schlick's_approximation) instead.
 * You should read the notes below on the Fresnel equations as well as on how to compute a transmittance BSDF.
 
-### Dielectrics and Transmission
+### Dielectrics and Transmission (for the extra credit)
 
 ### Fresnel Equations for Dielectric
 
@@ -61,7 +61,6 @@ Alternatively, you may compute <img src="dielectric_eq8.png" width="18">  using 
 ### Distribution Function for Transmitted Light
 
 We described the BRDF for perfect specular reflection in class, however we did not discuss the distribution function for transmitted light. Since refraction "spreads" or "condenses" a beam, unlike perfect reflection, the radiance along the ray changes due to a refraction event. In your assignment you should use Snell's Law to compute the direction of refraction rays, and use the following distribution function to compute the radiance of transmitted rays. We refer you guys to Pharr, Jakob, and and Humphries's book [Physically Based Rendering](http://www.pbr-book.org/) for a derivation based on Snell's Law and the relation <img src="dielectric_eq10.png" width="150">. (But you are more than welcome to attempt a derivation on your own!)
-
 
 When you are done, you will be able to render images like these:
 
