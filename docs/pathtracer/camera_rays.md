@@ -14,11 +14,11 @@ __Your job in Task 1 is to generate the ray `r` that is passed to `trace_ray(r)`
 
 Here's how to do it:
 
-For clarity, the top part of following diagram illustrates pixel space and normalized screen space in the ray tracer. Note that unlike Assignment 1 (0,0) is the bottom-left of the image in these coordinate spaces. The bottom part of the diagram illustrates the region seen by the camera in camera space coordinates. Note the pinhole of the camera is at the origin, and the camera is looking down the -Z axis. The sensor plane is located at Z=-1.  Note that the sensor in this diagram is in-front of the camera. This is intentional, since tracing a ray from the pinhole through this sensor plane is equivalent to tracing a ray _through the pinhole from a corresponding point on a sensor plane behind the pinhole_, but since the virtual sensor is in front of the pinhole, there's no need to invert the image.  
-
-Given this diagram, how would you compute the corners of the sensor plane given the field of fov (`vert_fov`) and aspect ratio of the screen? 
+The following diagram illustrates pixel space and normalized screen space in the ray tracer. Note that unlike Assignment 1 (0,0) is the bottom-left of the image in these coordinate spaces. The bottom part of the diagram illustrates the region seen by the camera in camera space coordinates. Note the pinhole of the camera is at the origin, and the camera is looking down the -Z axis. The sensor plane is located at Z=-1.  Also note that the sensor in this diagram is placed in front of the camera. This is intentional, since tracing a ray from the pinhole through this "virtual" sensor plane is equivalent to tracing a ray _through the pinhole from a corresponding point on a sensor plane behind the pinhole_, but since the virtual sensor is in front of the pinhole, there's no need to invert the image.  
 
 ![camera_rays](camera_rays.png)
+
+Something to think about: Given this diagram, how would you compute the corners of the sensor plane given the field of fov (`vert_fov`) and aspect ratio of the screen? 
 
 **Step 1: Compute a normalized screen space point.** Given the width and height of the screen, and point in pixel space, compute the corresponding coordinates of the point in normalized ([0-1]x[0-1]) screen space in `Pathtracer::trace_pixel`. Pass these coordinates to the camera via `Camera::generate_ray` in `camera.cpp`.
 
@@ -47,8 +47,9 @@ Once you have implemented `Pathtracer::trace_pixel`, `Rect::Uniform::sample` and
 
 **Extra credit ideas:**
 
-* Modify the implementation of the camera to simulate a camera with a finite aperture (rather than a pinhole camera). This will allow your ray tracer to simulate the effect of defocus blur.
-* Write your own sampler that generates samples with improved distribution. Some examples include:
+* How would you simulate a camera with a finite aperture instead of a pinhole camera.  If you did this, you'd be able to simulate real camera effects like [defocus blur](https://gfxcourses.stanford.edu/cs348k/spring22/lecture/camerapipeline3/slide_39) and [depth of field](https://gfxcourses.stanford.edu/cs348k/spring22/lecture/camerapipeline3/slide_40).
+
+* Write your own sampler that generates camera ray samples with improved distributions. Some example terms to Google include:
   * Jittered Sampling
   * Multi-jittered sampling
   * N-Rooks (Latin Hypercube) sampling
