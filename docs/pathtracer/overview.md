@@ -15,7 +15,7 @@ Implementing the functionality of PathTracer is split into a number of tasks, an
 - [(Task 2) Intersecting Objects](intersecting_objects.md)
 - [(Task 3) Bounding Volume Hierarchy](bounding_volume_hierarchy.md)
 - [(Task 4) Shadow Rays](shadow_rays.md)
-- [(Task 5) Path Tracing](path_tracing.md).
+- [(Task 5) Path Tracing](path_tracing.md)
 - [(Task 6) Materials](materials.md)
 
 <!-- - [(Task 7) Environment Lighting](environment_lighting.md) -->
