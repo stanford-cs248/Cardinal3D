@@ -16,9 +16,9 @@ In order to correctly implement `hit` you need to understand some of the fields 
 
 * `point`: represents the 3D point of origin of the ray
 * `dir`: represents the 3D direction of the ray (this direction will be normalized)
-* `time_bounds`: correspond to the minimum and maximum points on the ray with its x-component as the lower bound and y-component as the upper bound. That is, intersections that lie outside the [`ray.time_bounds.x`, `ray.time_bounds.y`]  range __should not be considered valid intersections with the primitive__.
+* `dist_bounds`: correspond to the minimum and maximum points on the ray with its x-component as the lower bound and y-component as the upper bound. That is, intersections that lie outside the [`ray.dist_bounds.x`, `ray.dist_bounds.y`]  range __should not be considered valid intersections with the primitive__.
 
-One important detail of the `Ray` structure is that `time_bounds` is a mutable field of the ray. This means that this field can be modified by constant member functions such as `Triangle::hit`. When finding the first intersection of a ray and the scene, you almost certainly want to update the ray's `time_bounds` value after finding each hit with scene geometry. _If you find a ray-triangle hit at time 't', what should you do to the ray's tiem bounds so that all future intersection tests are aware of this prior hit?_. 
+One important detail of the `Ray` structure is that `dist_bounds` is a mutable field of the ray. This means that this field can be modified by constant member functions such as `Triangle::hit`. When finding the first intersection of a ray and the scene, you almost certainly want to update the ray's `dist_bounds` value after finding each hit with scene geometry. _If you find a ray-triangle hit at distance 't', what should you do to the ray's tiem bounds so that all future intersection tests are aware of this prior hit?_. 
 
 By bounding the ray as tightly as possible, your ray tracer will be able to avoid unnecessary tests with scene geometry that is known to not be able to result in a closest hit, resulting in higher performance.
 
@@ -35,8 +35,8 @@ There are two important details you should be aware of about intersection:
 * When finding the first-hit intersection with a triangle, you need to fill in the `Trace` structure with details of the hit. The structure should be initialized with:
     
     * `hit`: a boolean representing if there is a hit or not
-    * `time`: the ray's _t_-value of the hit point
-    * `position`: the exact position of the hit point. This can be easily computed from the `time` of the hit, and ray's `point` and `dir`.
+    * `distance`: the ray's _t_-value of the hit point
+    * `position`: the exact position of the hit point. This can be easily computed from the `distance` of the hit, and ray's `point` and `dir`.
     * `normal`: the normal of the surface at the hit point. This normal should be the interpolated normal (obtained via interpolation of the per-vertex normals according to the barycentric coordinates of the hit point)
 
 Once you've successfully implemented triangle intersection, you will be able to render many of the scenes in the `/media` directory. However, your ray tracer will be very, very slow on high triangle count scenes.
@@ -47,5 +47,5 @@ Tip: [Visualization of normals](visualization_of_normals.md) might be very helpf
 
 ### **Step 2: Intersecting Spheres (EXTRA CREDIT ONLY)**
 
-As you did with triangles, implement the `hit` routines for the `Sphere` class in `student/shapes.cpp`. Remember that your intersection tests should respect the ray's `time_bound`.
+As you did with triangles, implement the `hit` routines for the `Sphere` class in `student/shapes.cpp`. Remember that your intersection tests should respect the ray's `dist_bound`.
 
