@@ -18,21 +18,30 @@ Spectrum Pathtracer::trace_pixel(size_t x, size_t y) {
 
     // Generate a sample within the pixel with coordinates xy and return the
     // incoming light using trace_ray.
-
+    Ray out;
     // If n_samples is 1, please send the ray through the center of the pixel.
-    // If n_samples > 1, please send the ray through any random point within the pixel
+    if(n_samples == 1) {
+        out = camera.generate_ray(Vec2(x + 0.5f, y + 0.5f) / wh);
+        return trace_ray(out);
+    } else if(n_samples > 1) {
+        // If n_samples > 1, please send the ray through any random point within the pixel
+        Samplers::Rect::Uniform rect_sampler;
+        float pdf;
+        Vec2 rand_point = rect_sampler.sample(pdf);
+        out = camera.generate_ray(rand_point / wh);
+    } else {
 
-    // Tip: consider making a call to Samplers::Rect::Uniform
+        // As an example, the code below generates a ray through the bottom left of the
+        // specified pixel
+        out = camera.generate_ray(xy / wh);
+    }
 
     // Tip: you may want to use log_ray for debugging. Given ray t, the following lines
     // of code will log .03% of all rays (see util/rand.h) for visualization in the app.
     // see student/debug.h for more detail.
-    //if (RNG::coin_flip(0.0003f))
-    //    log_ray(out, 10.0f);
+    if (RNG::coin_flip(0.0005f))
+       log_ray(out, 10.0f);
 
-    // As an example, the code below generates a ray through the bottom left of the
-    // specified pixel
-    Ray out = camera.generate_ray(xy / wh);
     return trace_ray(out);
 }
 
@@ -71,8 +80,9 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     // TODO (PathTracer): Task 4
     // The starter code sets radiance_out to (0.25,0.25,0.25) so that you can test your geometry
-    // queries before you implement real lighting in Tasks 4 and 5. (i.e, anything that gets hit is not black.)
-    // You should change this to (0,0,0) and accumulate the direct and indirect lighting computed below.
+    // queries before you implement real lighting in Tasks 4 and 5. (i.e, anything that gets hit is
+    // not black.) You should change this to (0,0,0) and accumulate the direct and indirect lighting
+    // computed below.
     Spectrum radiance_out = Spectrum(0.25f);
     {
 
@@ -83,8 +93,9 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
             int samples = light.is_discrete() ? 1 : (int)n_area_samples;
             for(int i = 0; i < samples; i++) {
 
-                // Grab a sample of the light source. See rays/light.h for definition of this struct.
-                // Most importantly for Task 4, it contains the distance to the light from hit.position. 
+                // Grab a sample of the light source. See rays/light.h for definition of this
+                // struct. Most importantly for Task 4, it contains the distance to the light from
+                // hit.position.
                 Light_Sample sample = light.sample(hit.position);
                 Vec3 in_dir = world_to_object.rotate(sample.direction);
 
@@ -111,7 +122,8 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
                 // Note: that along with the typical cos_theta, pdf factors, we divide by samples.
                 // This is because we're doing another monte-carlo estimate of the lighting from
                 // area lights here.
-                radiance_out += (cos_theta / (samples * sample.pdf)) * sample.radiance * attenuation;
+                radiance_out +=
+                    (cos_theta / (samples * sample.pdf)) * sample.radiance * attenuation;
             }
         };
 
@@ -120,10 +132,8 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
         if(!bsdf.is_discrete()) {
 
             // loop over all the lights and accumulate radiance.
-            for(const auto& light : lights)
-                sample_light(light);
-            if(env_light.has_value())
-                sample_light(env_light.value());
+            for(const auto& light : lights) sample_light(light);
+            if(env_light.has_value()) sample_light(env_light.value());
         }
     }
 
