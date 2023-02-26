@@ -221,6 +221,7 @@ std::optional<Halfedge_Mesh::VertexRef> Halfedge_Mesh::collapse_edge(Halfedge_Me
         he_0->face()->halfedge() = he_0->next();
     } else if(num_edges_f_0 == 3) {
         // if a triangle (edges = 3), then check he_0->next()->vertex() is v_1 (vertex to remove).
+
         HalfedgeRef he_to_update;
         HalfedgeRef he_twin_on_other_polygon;
         HalfedgeRef neighbor_polygon_he_iter;
@@ -354,9 +355,65 @@ std::optional<Halfedge_Mesh::VertexRef> Halfedge_Mesh::collapse_edge(Halfedge_Me
     the new vertex created by the collapse.
 */
 std::optional<Halfedge_Mesh::VertexRef> Halfedge_Mesh::collapse_face(Halfedge_Mesh::FaceRef f) {
+    std::vector<std::vector<HalfedgeRef>> all_halfedges;
+    std::vector<EdgeRef> del_edges;
+    std::vector<HalfedgeRef> del_halfedges;
+    std::vector<VertexRef> del_vertices;
+    std::vector<FaceRef> faces;
 
-    (void)f;
-    return std::nullopt;
+    Vec3 c = f->center();
+    VertexRef v_c = new_vertex();
+    v_c->pos = c;
+
+    // iterate through edges of face
+    HalfedgeRef h = f->halfedge();
+
+    do {
+        std::vector<HalfedgeRef> polygon;
+
+        // iterate through halfedges within each face attached to vertex
+        HalfedgeRef h_inner = h->twin();
+        del_vertices.push_back(h_inner->vertex());
+        do {
+            polygon.push_back(h_inner);
+            h_inner = h_inner->next();
+        } while(h_inner != h->twin());
+
+        del_edges.push_back(h->edge());
+        faces.push_back(h->face());
+        del_halfedges.push_back(h);
+        del_halfedges.push_back(h->twin());
+        all_halfedges.push_back(polygon);
+
+        // go to next edge
+        h = h->next();
+    } while(h != f->halfedge());
+
+    int size = del_edges.size();
+    for (int i = 0; i < size; i++) {
+        std::vector<HalfedgeRef> curr = all_halfedges[i];
+
+        // ensure face is assigned to live halfedge
+        faces[i]->halfedge() = curr[1];
+        v_c->halfedge() = curr[1];
+        
+        HalfedgeRef first = curr[1];
+        HalfedgeRef last = curr.back();
+        // set neighbors
+        first->set_neighbors(first->next(), first->twin(), v_c, first->edge(), first->face());
+        last->set_neighbors(curr[1], last->twin(), last->vertex(), last->edge(), last->face());
+    }
+
+    // delete all faces except first one, edges to delete, and halfedges to delete
+    for(int i = 0; i < size; i++) {
+        erase(f);
+        erase(del_edges[i]);
+        erase(del_vertices[i]);
+        erase(del_halfedges[i * 2]);
+        erase(del_halfedges[i * 2 + 1]);
+    }
+    
+    return v_c;
 }
 
 /*
@@ -1072,7 +1129,93 @@ bool Halfedge_Mesh::isotropic_remesh() {
     // but here simply calling collapse_edge() will not erase the elements.
     // You should use collapse_edge_erase() instead for the desired behavior.
 
-    return false;
+    for(FaceRef f0 = faces_begin(); f0 != faces_end(); f0++) {
+        int n = (int)f0->degree();
+        if(n == 3) {
+            continue;
+        }
+    }
+    int n = n_edges();
+
+    float mean = 0.f;
+    for(EdgeRef e = edges_begin(); e != edges_end(); e++) {
+        mean += e->length();
+    }
+    mean /= n;
+
+    // Split edges much longer than the target length
+    EdgeRef e = edges_begin();
+    for(int i = 0; i < n; i++) {
+
+        EdgeRef nextEdge = e;
+        nextEdge++;
+        if(e->length() > (4.f / 3.f) * mean) {
+            split_edge(e);
+        }
+
+        e = nextEdge;
+    }
+
+    // Collapse edges much shorter than the target length.
+    e = edges_begin();
+    for(int i = 0; i < n; i++) {
+        EdgeRef nextEdge = e;
+        nextEdge++;
+        if(e->length() < 0.8f * mean) {
+            collapse_edge_erase(e);
+        }
+
+        e = nextEdge;
+    }
+
+    // flip each edge if it improves vertex degree
+    e = edges_begin();
+    for(int i = 0; i < n; i++) {
+
+        EdgeRef nextEdge = e;
+        nextEdge++;
+
+        HalfedgeRef h = e->halfedge();
+        HalfedgeRef twin = h->twin();
+
+        // a and b are the two vertices of the edge
+        // c and d are opposite
+        // triangles are abc and abd
+        int a, b, c, d;
+        a = (int)h->vertex()->degree();
+        b = (int)twin->vertex()->degree();
+        c = (int)h->next()->next()->vertex()->degree();
+        d = (int)twin->next()->next()->vertex()->degree();
+
+        // calculate deviation before flipping
+        int pre_dev = std::abs(a - 6) + std::abs(b - 6) + std::abs(c - 6) + std::abs(d - 6);
+
+        a--;
+        b--;
+        c++;
+        d++;
+        // calculate deviation after flipping
+        int post_dev = std::abs(a - 6) + std::abs(b - 6) + std::abs(c - 6) + std::abs(d - 6);
+        if(post_dev < pre_dev) {
+            flip_edge(e);
+        }
+
+        e = nextEdge;
+    }
+
+    // apply some tangential smoothing to the vertex positions
+    for(VertexRef v = vertices_begin(); v != vertices_end(); v++) {
+        Vec3 c = v->neighborhood_center();
+        Vec3 p = v->pos;
+
+        v->new_pos = p + 0.2f * (c - p);
+    }
+
+    for(VertexRef v = vertices_begin(); v != vertices_end(); v++) {
+        v->pos = v->new_pos;
+    }
+
+    return true;
 }
 
 /* Helper type for quadric simplification */
