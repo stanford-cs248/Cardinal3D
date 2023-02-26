@@ -13,6 +13,11 @@ BBox Triangle::bbox() const {
     // account for that here, or later on in BBox::intersect
 
     BBox box;
+
+    box.enclose(vertex_list[v0].position);
+    box.enclose(vertex_list[v1].position);
+    box.enclose(vertex_list[v2].position);
+
     return box;
 }
 
@@ -20,29 +25,77 @@ Trace Triangle::hit(const Ray& ray) const {
 
     // Vertices of triangle - has postion and surface normal
     // See rays/tri_mesh.h for a description of this struct
-    
+
     Tri_Mesh_Vert v_0 = vertex_list[v0];
     Tri_Mesh_Vert v_1 = vertex_list[v1];
     Tri_Mesh_Vert v_2 = vertex_list[v2];
 
-    // here just to avoid unused variable warnings, students should remove the following three lines.
-    (void)v_0;
-    (void)v_1;
-    (void)v_2;
-    
     // TODO (PathTracer): Task 2
     // Intersect this ray with a triangle defined by the above three points.
     // Intersection should yield a ray t-value, and a hit point (u,v) on the surface of the triangle
-
     // You'll need to fill in a "Trace" struct describing information about the hit (or lack of hit)
+
+    // get relevant variables for ray equation
+    Vec3 p_0 = v_0.position;
+    Vec3 p_1 = v_1.position;
+    Vec3 p_2 = v_2.position;
+    Vec3 o = ray.point;
+    Vec3 d = ray.dir;
+
+    // get uv-plane variables
+    Vec3 e_1 = p_1 - p_0;
+    Vec3 e_2 = p_2 - p_0;
+    Vec3 s = o - p_0;
+
+    // cross product sub-expressions
+    Vec3 e_1_cross_d = cross(e_1, d);
+    Vec3 s_cross_e_2 = cross(s, e_2);
+
+    // dot product sub-expressions
+    float e_1_cross_d_dot_e_2 = dot(e_1_cross_d, e_2);
+    float s_cross_e_2_dot_d = dot(s_cross_e_2, d);
+    float e_1_cross_d_dot_s = dot(e_1_cross_d, s);
+    float s_cross_e_2_dot_e_1 = dot(s_cross_e_2, e_1);
+
+    // if denominator is 0, no intersection found
+    if(e_1_cross_d_dot_e_2 == 0) {
+        return Trace();
+    }
+
+    Vec3 vec = Vec3(-1.0 * s_cross_e_2_dot_d, e_1_cross_d_dot_s, -1.0 * s_cross_e_2_dot_e_1);
+    Vec3 u_v_t = 1.0 / e_1_cross_d_dot_e_2 * vec;
+
+    float t = u_v_t.z;
+
+    // barycentric coordinates sum to 1
+    float u = u_v_t.x;
+    float v = u_v_t.y;
+    float w = 1 - (u + v);
+
+    // barycentric coordinates must be exclusively 0 and 1 -> (0, 1)
+    if(!(u > 0 && u < 1) || !(v > 0 && v < 1) || !(v > 0 && v < 1)) {
+        return Trace();
+    }
+
+    // intersection point must be within bounds of the ray
+    if(t < ray.dist_bounds[0] || t > ray.dist_bounds[1]) {
+        return Trace();
+    }
+
+    // normal obtained via interpolation of the per-vertex normals according to the barycentric
+    // coordinates of the hit point
+    Vec3 n_0 = v_0.normal;
+    Vec3 n_1 = v_1.normal;
+    Vec3 n_2 = v_2.normal;
+    Vec3 normal = n_0 * w + n_1 * u + p_2 * v;
 
     Trace ret;
     ret.origin = ray.point;
-    ret.hit = false;       // was there an intersection?
-    ret.distance = 0.0f;   // at what distance did the intersection occur?
-    ret.position = Vec3{}; // where was the intersection?
-    ret.normal = Vec3{};   // what was the surface normal at the intersection?
-                           // (this should be interpolated between the three vertex normals)
+    ret.hit = true;           // was there an intersection?
+    ret.distance = t;         // at what distance did the intersection occur?
+    ret.position = ray.at(t); // where was the intersection?
+    ret.normal = normal;      // what was the surface normal at the intersection?
+                              // (this should be interpolated between the three vertex normals)
     return ret;
 }
 
