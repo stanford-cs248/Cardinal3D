@@ -39,8 +39,7 @@ Spectrum Pathtracer::trace_pixel(size_t x, size_t y) {
     // Tip: you may want to use log_ray for debugging. Given ray t, the following lines
     // of code will log .03% of all rays (see util/rand.h) for visualization in the app.
     // see student/debug.h for more detail.
-    if (RNG::coin_flip(0.0005f))
-       log_ray(out, 10.0f);
+    if(RNG::coin_flip(0.0005f)) log_ray(out, 10.0f);
 
     return trace_ray(out);
 }
@@ -83,7 +82,7 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
     // queries before you implement real lighting in Tasks 4 and 5. (i.e, anything that gets hit is
     // not black.) You should change this to (0,0,0) and accumulate the direct and indirect lighting
     // computed below.
-    Spectrum radiance_out = Spectrum(0.25f);
+    Spectrum radiance_out = Spectrum(0.f);
     {
 
         // lambda function to sample a light. Called in loop below.
@@ -112,18 +111,25 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
                 // TODO (PathTracer): Task 4
                 // Construct a shadow ray and compute whether the intersected surface is
                 // in shadow. Only accumulate light if not in shadow.
-
+                
                 // Tip: since you're creating the shadow ray at the intersection point, it may
                 // intersect the surface at time=0. Similarly, if the ray is allowed to have
                 // arbitrary length, it will hit the light it was cast at. Therefore, you should
                 // modify the time_bounds of your shadow ray to account for this. Using EPS_F is
                 // recommended.
+                Vec3 shadow_dir = sample.direction.unit();
+                Ray shadow_ray = Ray(hit.position, shadow_dir);
+                shadow_ray.dist_bounds.x = EPS_F;
+                shadow_ray.dist_bounds.y = sample.distance - EPS_F;
+                Trace shadowhit = scene.hit(shadow_ray);
 
                 // Note: that along with the typical cos_theta, pdf factors, we divide by samples.
                 // This is because we're doing another monte-carlo estimate of the lighting from
                 // area lights here.
-                radiance_out +=
-                    (cos_theta / (samples * sample.pdf)) * sample.radiance * attenuation;
+                if(!shadowhit.hit) {
+                    radiance_out +=
+                        (cos_theta / (samples * sample.pdf)) * sample.radiance * attenuation;
+                }
             }
         };
 
