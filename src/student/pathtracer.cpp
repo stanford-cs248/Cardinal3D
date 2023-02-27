@@ -122,11 +122,12 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
                 // setting bounds to avoid intersection at time=0
                 shadow_ray.dist_bounds = Vec2(EPS_F, sample.distance - EPS_F);
-                Trace t;
 
                 // Note: that along with the typical cos_theta, pdf factors, we divide by samples.
                 // This is because we're doing another monte-carlo estimate of the lighting from
                 // area lights here.
+
+                // Only add to radiance_out if not in shadow
                 if(!scene.hit(shadow_ray).hit) {
                     radiance_out +=
                         (cos_theta / (samples * sample.pdf)) * sample.radiance * attenuation;
