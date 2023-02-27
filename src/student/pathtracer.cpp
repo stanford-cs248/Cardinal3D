@@ -122,7 +122,6 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
                 // setting bounds to avoid intersection at time=0
                 shadow_ray.dist_bounds = Vec2(EPS_F, sample.distance - EPS_F);
-                Trace t;
 
                 // Note: that along with the typical cos_theta, pdf factors, we divide by samples.
                 // This is because we're doing another monte-carlo estimate of the lighting from
@@ -149,6 +148,9 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     // (1) Ray objects have a depth field; if it reaches max_depth, you should
     // terminate the path.
+    if (ray.depth >= max_depth) {
+        return radiance_out;
+    }
 
     // (2) Randomly select a new ray direction (it may be reflection or transmittance
     // ray depending on surface type) using bsdf.sample()
