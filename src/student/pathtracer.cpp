@@ -126,6 +126,8 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
                 // Note: that along with the typical cos_theta, pdf factors, we divide by samples.
                 // This is because we're doing another monte-carlo estimate of the lighting from
                 // area lights here.
+
+                // Only add to radiance_out if not in shadow
                 if(!scene.hit(shadow_ray).hit) {
                     radiance_out +=
                         (cos_theta / (samples * sample.pdf)) * sample.radiance * attenuation;
@@ -154,6 +156,7 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     // (2) Randomly select a new ray direction (it may be reflection or transmittance
     // ray depending on surface type) using bsdf.sample()
+    BSDF_Sample new_ray = bsdf.sample(hit.normal);
 
     // (3) Compute the throughput of the recursive ray. This should be the current ray's
     // throughput scaled by the BSDF attenuation, cos(theta), and BSDF sample PDF.
@@ -163,6 +166,8 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
     // (4) Create new scene-space ray and cast it to get incoming light. As with shadow rays, you
     // should modify time_bounds so that the ray does not intersect at time = 0. Remember to
     // set the new throughput and depth values.
+    Ray new_scene_ray(hit.origin, new_ray.direction.unit());
+    
 
     // (5) Add contribution due to incoming light with proper weighting. Remember to add in
     // the BSDF sample emissive term.
