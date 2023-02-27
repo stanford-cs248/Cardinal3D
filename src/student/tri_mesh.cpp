@@ -87,7 +87,7 @@ Trace Triangle::hit(const Ray& ray) const {
     Vec3 n_0 = v_0.normal;
     Vec3 n_1 = v_1.normal;
     Vec3 n_2 = v_2.normal;
-    Vec3 normal = n_0 * w + n_1 * u + p_2 * v;
+    Vec3 normal = n_0 * w + n_1 * u + n_2 * v;
 
     Trace ret;
     ret.origin = ray.point;
