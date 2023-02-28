@@ -73,7 +73,7 @@ Trace Triangle::hit(const Ray& ray) const {
     float w = 1 - (u + v);
 
     // barycentric coordinates must be exclusively 0 and 1 -> (0, 1)
-    if(!(u > 0 && u < 1) || !(v > 0 && v < 1) || !(v > 0 && v < 1)) {
+    if(!(u > 0 && u < 1) || !(v > 0 && v < 1) || !(w > 0 && w < 1)) {
         return Trace();
     }
 
