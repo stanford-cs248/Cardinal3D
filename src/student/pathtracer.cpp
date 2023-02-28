@@ -150,28 +150,44 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     // (1) Ray objects have a depth field; if it reaches max_depth, you should
     // terminate the path.
-    if (ray.depth >= max_depth) {
+    if(ray.depth >= max_depth) {
         return radiance_out;
     }
 
     // (2) Randomly select a new ray direction (it may be reflection or transmittance
     // ray depending on surface type) using bsdf.sample()
-    BSDF_Sample new_ray = bsdf.sample(hit.normal);
+    BSDF_Sample ray_sample = bsdf.sample(hit.normal);
 
     // (3) Compute the throughput of the recursive ray. This should be the current ray's
     // throughput scaled by the BSDF attenuation, cos(theta), and BSDF sample PDF.
     // Potentially terminate the path using Russian roulette as a function of the new throughput.
     // Note that allowing the termination probability to approach 1 may cause extra speckling.
 
-    // (4) Create new scene-space ray and cast it to get incoming light. As with shadow rays, you
-    // should modify time_bounds so that the ray does not intersect at time = 0. Remember to
+    // cos is expressed as dot (u,v) / (len(u)*len(v)). Since len of direction and normal are both
+    // 1, cos is just the dot product
+    float cos_theta = dot(ray_sample.direction.unit(), hit.normal);
+    Spectrum throughput =
+        Spectrum(ray.throughput * ray_sample.attenuation * cos_theta * 1.f / ray_sample.pdf);
+
+    float throughput_probability = 1 - throughput.luma();
+    if(RNG::unit() < throughput_probability) {
+        return radiance_out;
+    }
+
+    // (4) Create new scene-space ray and cast it to get incoming light. As with shadow rays,
+    // you should modify time_bounds so that the ray does not intersect at time = 0. Remember to
     // set the new throughput and depth values.
-    Ray new_scene_ray(hit.origin, new_ray.direction.unit());
-    
+    Ray new_scene_ray(hit.origin, ray_sample.direction.unit());
+    new_scene_ray.throughput = throughput;
+    new_scene_ray.depth = ray.depth + 1;
+    new_scene_ray.dist_bounds = Vec2(EPS_F, ray.dist_bounds.y - EPS_F);
 
     // (5) Add contribution due to incoming light with proper weighting. Remember to add in
     // the BSDF sample emissive term.
-    return radiance_out;
+    return radiance_out +=
+           ray_sample.emissive + (cos_theta / (ray_sample.pdf * throughput_probability)) *
+                                     trace_ray(new_scene_ray) * ray_sample.attenuation;
+    ;
 }
 
 } // namespace PT
