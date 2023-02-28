@@ -164,7 +164,7 @@ void BVH<Primitive>::hit_helper(const Ray& ray, const Node& node, Trace* ret) co
             if(left_hit_times.x < right_hit_times.x) {
                 // left bbox hit before right bbox
                 hit_helper(ray, left_node, ret);
-                if(!ret->hit || left_hit_times.x < ret->distance) {
+                if(!ret->hit || right_hit_times.x < ret->distance) {
                     // if ray didn't hit anything on left, or right is still closer than closest hit
                     // on left
                     hit_helper(ray, right_node, ret);
@@ -172,7 +172,7 @@ void BVH<Primitive>::hit_helper(const Ray& ray, const Node& node, Trace* ret) co
             } else {
                 // right bbox hit before left bbox
                 hit_helper(ray, right_node, ret);
-                if(!ret->hit || right_hit_times.x < ret->distance) {
+                if(!ret->hit || left_hit_times.x < ret->distance) {
                     // if ray didn't hit anything on right, or left is still closer than closest hit
                     // on right
                     hit_helper(ray, left_node, ret);
