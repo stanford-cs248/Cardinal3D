@@ -9,7 +9,11 @@ Vec3 reflect(Vec3 dir) {
 
     // TODO (PathTracer): Task 6
     // Return reflection of dir about the surface normal (0,1,0).
-    return Vec3();
+    // -wi + 2 *dot(wi,norm)*norm
+
+    Vec3 norm = Vec3(0, 1, 0);
+
+    return -dir + 2 * dot(dir, norm) * norm;
 }
 
 Vec3 refract(Vec3 out_dir, float index_of_refraction, bool& was_internal) {
@@ -35,15 +39,16 @@ BSDF_Sample BSDF_Lambertian::sample(Vec3 out_dir) const {
     // Implement lambertian BSDF. Use of BSDF_Lambertian::sampler may be useful
 
     BSDF_Sample ret;
-    // What is the ratio of reflected/incoming light?
-    ret.attenuation = albedo;
+
+    // What is the ratio of reflected/incoming light? albedo, but it's in evaluate
+    float pdf;
+    ret.attenuation = evaluate(out_dir, sampler.sample(pdf));
 
     // What direction should we sample incoming light from?
-    float pdf;
     ret.direction = sampler.sample(pdf);
 
     // Was was the PDF of the sampled direction?
-    ret.pdf = pdf; 
+    ret.pdf = pdf;
     return ret;
 }
 
@@ -57,9 +62,9 @@ BSDF_Sample BSDF_Mirror::sample(Vec3 out_dir) const {
     // Implement mirror BSDF
 
     BSDF_Sample ret;
-    ret.attenuation = reflectance; // What is the ratio of reflected/incoming light?
-    ret.direction = Vec3();       // What direction should we sample incoming light from?
-    ret.pdf = 0.0f; // Was was the PDF of the sampled direction? (In this case, the PMF)
+    ret.attenuation = reflectance;    // What is the ratio of reflected/incoming light?
+    ret.direction = reflect(out_dir); // What direction should we sample incoming light from?
+    ret.pdf = 1.0f; // Was was the PDF of the sampled direction? (In this case, the PMF)
     return ret;
 }
 
