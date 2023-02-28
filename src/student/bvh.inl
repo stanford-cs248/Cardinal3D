@@ -93,9 +93,9 @@ void BVH<Primitive>::build(std::vector<Primitive>&& prims, size_t max_leaf_size)
     // responsible for reorganizing the primitives in the primitives array so that
     // after a SAH split is computed, the chidren refer to contiguous ranges of primitives.
 
-    size_t startl = 0;  // starting prim index of left child
-    size_t rangel = 1;  // number of prims in left child
-    size_t startr = startl + rangel;  // starting prim index of right child
+    size_t startl = 0;                          // starting prim index of left child
+    size_t rangel = 1;                          // number of prims in left child
+    size_t startr = startl + rangel;            // starting prim index of right child
     size_t ranger = primitives.size() - rangel; // number of prims in right child
 
     // create child nodes
@@ -123,13 +123,63 @@ Trace BVH<Primitive>::hit(const Ray& ray) const {
 
     // The starter code simply iterates through all the primitives.
     // Again, remember you can use hit() on any Primitive value.
-
+    Node node = nodes[0];
+    BBox node_bbox = node.bbox;
+    Vec2 hit_times;
     Trace ret;
-    for(const Primitive& prim : primitives) {
-        Trace hit = prim.hit(ray);
-        ret = Trace::min(ret, hit);
+    if(node_bbox.hit(ray, hit_times)) {
+        hit_helper(ray, node, &ret);
     }
     return ret;
+}
+
+template<typename Primitive>
+void BVH<Primitive>::hit_helper(const Ray& ray, const Node& node, Trace* ret) const {
+
+    if(node->is_leaf()) {
+        for(int i = start; i < start + size; i++) {
+            Primitive& p = primitives[i];
+            Trace hit = prim.hit(ray);
+            *ret = Trace::min(*ret, hit);
+        }
+    } else {
+        Node left_node = nodes[node.l];
+        BBox left_bbox = left_node.bbox;
+        Vec2 left_hit_times;
+        bool left_hit = left_bbox.hit(ray, left_hit_times);
+
+        Node right_node = nodes[node.r];
+        BBox right_bbox = right_node.bbox;
+        Vec2 right_hit_times;
+        bool right_hit = right_bbox.hit(ray, right_hit_times);
+
+        if(left_hit && !right_hit) {
+            // only left bbox hit
+            hit_helper(ray, left_node, ret);
+        } else if(!left_hit && right_hit) {
+            // only right bbox hit
+            hit_helper(ray, right_node, ret);
+        } else {
+            // both hit - front-to-back traversal
+            if(left_hit_times.x < right_hit_times.x) {
+                // left bbox hit before right bbox
+                hit_helper(ray, left_node, ret);
+                if(!ret->hit || left_hit_times.x < ret->distance) {
+                    // if ray didn't hit anything on left, or right is still closer than closest hit
+                    // on left
+                    hit_helper(ray, right_node, ret);
+                }
+            } else {
+                // right bbox hit before left bbox
+                hit_helper(ray, right_node, ret);
+                if(!ret->hit || right_hit_times.x < ret->distance) {
+                    // if ray didn't hit anything on right, or left is still closer than closest hit
+                    // on right
+                    hit_helper(ray, left_node, ret);
+                }
+            }
+        }
+    }
 }
 
 template<typename Primitive>
