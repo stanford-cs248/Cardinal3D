@@ -15,7 +15,7 @@ Vec2 Rect::Uniform::sample(float& pdf) const {
     // PDF is the probability density of the chosen sample
     // the PDF should integrate to 1 over the whole rectangle
     // if integral (0 -> area) = 1, then pdf is 1/area
-    pdf = 1.0f / (size.x * size.y); 
+    pdf = 1.0f / (size.x * size.y);
 
     // Return the randomly generated point
     float random_x = size.x * RNG::unit();
@@ -28,7 +28,19 @@ Vec3 Hemisphere::Cosine::sample(float& pdf) const {
 
     // TODO (PathTracer): Task 6
     // You may implement this, but don't have to.
-    return Vec3();
+
+    // grab random angles according to cos weighted: 
+    // pdf = cos(theta) / 
+    float rand_phi = RNG::unit() * 2 * PI_F;
+    float rand_theta = std::acos(Radians(std::sqrt(RNG::unit())));
+
+    float x = std::sin(rand_phi) * std::cos(rand_theta) ;
+    float y = std::sin(rand_phi) * std::sin(rand_theta) ;
+    float z = std::cos(rand_phi);
+
+    pdf = std::cos(rand_theta) / PI_F;
+
+    return Vec3(x, y, z);
 }
 
 Vec3 Sphere::Uniform::sample(float& pdf) const {
