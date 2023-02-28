@@ -62,6 +62,8 @@ BSDF_Sample BSDF_Mirror::sample(Vec3 out_dir) const {
     // Implement mirror BSDF
 
     BSDF_Sample ret;
+
+    // not sure if this is right. I would've set evaluate to some operation on reflectance, but evaluate says to always return 0
     ret.attenuation = reflectance;    // What is the ratio of reflected/incoming light?
     ret.direction = reflect(out_dir); // What direction should we sample incoming light from?
     ret.pdf = 1.0f; // Was was the PDF of the sampled direction? (In this case, the PMF)
