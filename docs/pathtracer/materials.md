@@ -24,7 +24,7 @@ There are also two helper functions in the BSDF class in `student/bsdf.cpp` that
 
 ## Step 1: Perfect Mirror Surfaces
 
-Implement the class `BSDF_Mirror` which represents a material with perfect specular reflection (a perfect mirror). You should Implement `BSDF_Mirror::sample`, `BSDF_Mirror::evaluate`, and `reflect`. **(Hint: what should the pdf sampled by  `BSDF_Mirror::sample` be? What should the reflectance function `BSDF_Mirror::evalute` be?)**
+Implement the class `BSDF_Mirror` which represents a material with perfect specular reflection (a perfect mirror). You should Implement `BSDF_Mirror::sample`, `BSDF_Mirror::evaluate`, and `reflect`. **(Hint: what should the pdf sampled by `BSDF_Mirror::sample` be? What should the reflectance function `BSDF_Mirror::evaluate` be? )**
 
 ## Step 2: Transmissive Surfaces (EXTRA CREDIT)
 
