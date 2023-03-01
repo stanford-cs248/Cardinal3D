@@ -20,9 +20,10 @@ Ray Camera::generate_ray(Vec2 screen_coord) const {
     float screen_h = 2 * std::tan(Radians(vert_fov) / 2);
     float screen_w = screen_h * aspect_ratio;
 
+    // offset because center of view space is (0,0)
     float offset_h = screen_h / 2;
     float offset_w = screen_w / 2;
-    
+
     // unit direction looking down -z axis
     Vec3 dir =
         Vec3(screen_w * screen_coord.x - offset_w, screen_h * screen_coord.y - offset_h, -1.0f)
