@@ -28,7 +28,7 @@ Implement the class `BSDF_Mirror` which represents a material with perfect specu
 
 ## Step 2: Transmissive Surfaces (EXTRA CREDIT)
 
-Implement the class `BSDF_Glass` which is a glass-like material that both reflects light and transmit light. As discussed in class the fraction of light that is reflected and transmitted through glass is given by the dielectric Fresnel equations.
+Implement the class `BSDF_Glass` which is a glass-like material that both reflects light and transmit light. As discussed in class. the fraction of light that is reflected and transmitted through glass is given by the dielectric Fresnel equations.
 
 Specifically your implementation should:
 
@@ -60,7 +60,7 @@ Alternatively, you may compute <img src="dielectric_eq8.png" width="18">  using 
 
 ### Distribution Function for Transmitted Light
 
-We described the BRDF for perfect specular reflection in class, however we did not discuss the distribution function for transmitted light. Since refraction "spreads" or "condenses" a beam, unlike perfect reflection, the radiance along the ray changes due to a refraction event. In your assignment you should use Snell's Law to compute the direction of refraction rays, and use the following distribution function to compute the radiance of transmitted rays. We refer you guys to Pharr, Jakob, and and Humphries's book [Physically Based Rendering](http://www.pbr-book.org/) for a derivation based on Snell's Law and the relation <img src="dielectric_eq10.png" width="150">. (But you are more than welcome to attempt a derivation on your own!)
+We described the BRDF for perfect specular reflection in class, however we did not discuss the distribution function for transmitted light. Since refraction "spreads" or "condenses" a beam, unlike perfect reflection, the radiance along the ray changes due to a refraction event. In your assignment you should use Snell's Law to compute the direction of refraction rays, and use the distribution function given in section 8.2 of Pharr, Jakob, and and Humphries's book [Physically Based Rendering](http://www.pbr-book.org/) for transmission and reflectance from a glass surface. See the book for a derivation based on Snell's Law and the relation <img src="dielectric_eq10.png" width="150">. (But you are more than welcome to attempt a derivation on your own!)
 
 When you are done, you will be able to render images like these:
 
