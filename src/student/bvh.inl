@@ -65,7 +65,6 @@ void BVH<Primitive>::build(std::vector<Primitive>&& prims, size_t max_leaf_size)
     for(size_t i = 0; i < primitives.size(); ++i) {
         bbox.enclose(primitives[i].bbox());
     }
-    // std::cout << "primitives.size() " << primitives.size() << "\n";
 
     size_t node_idx = new_node(bbox, 0, primitives.size(), 0, 0);
     build_helper(node_idx, max_leaf_size);
@@ -119,9 +118,6 @@ void BVH<Primitive>::build_helper(int node_idx, size_t max_leaf_size) {
     if(node.size <= max_leaf_size) {
         return;
     }
-
-    // std::cout << "node_idx " << node_idx << "\n";
-    // std::cout << "max_leaf_size " << max_leaf_size << "\n";
 
     size_t num_buckets = 16;
     BBox node_bbox = node.bbox;
