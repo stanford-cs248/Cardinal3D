@@ -117,31 +117,69 @@ void BVH<Primitive>::build(std::vector<Primitive>&& prims, size_t max_leaf_size)
     for(size_t i = 0; i < primitives.size(); ++i) {
         bbox.enclose(primitives[i].bbox());
     }
-    std::cout << "primitives.size() " << primitives.size() << "\n";
+    // std::cout << "primitives.size() " << primitives.size() << "\n";
 
     size_t node_idx = new_node(bbox, 0, primitives.size(), 0, 0);
     build_helper(node_idx, max_leaf_size);
 }
 
-template<typename Primitive> void BVH<Primitive>::build_helper(int node_idx, size_t max_leaf_size) {
+/* Returns true if lowest_partition_cost was updated in this iteration of the function
+ */
+template<typename Primitive>
+bool BVH<Primitive>::get_lowest_cost_SAH(float node_surface_area, float bucket_space_start,
+                                         float bucket_size,
+                                         const std::vector<BVH<Primitive>::Bucket>& buckets,
+                                         float& lowest_cost, float& pivot) {
+    bool out = false;
+    size_t num_buckets = 16;
+    for(size_t i = 1; i < num_buckets; i++) {
+        Bucket left_partition;
+        Bucket right_partition;
 
+        // make the two parititions to evaluate cost on
+        for(size_t j = 0; j < num_buckets; j++) {
+            Bucket bucket = buckets[j];
+
+            if(j < i) {
+                left_partition.bbox.enclose(bucket.bbox);
+                left_partition.primitives_count += bucket.primitives_count;
+            } else {
+                right_partition.bbox.enclose(bucket.bbox);
+                right_partition.primitives_count += bucket.primitives_count;
+            }
+        }
+
+        float cost = left_partition.bbox.surface_area() / node_surface_area *
+                         left_partition.primitives_count +
+                     right_partition.bbox.surface_area() / node_surface_area *
+                         right_partition.primitives_count;
+
+        if(cost < lowest_cost) {
+            lowest_cost = cost;
+            pivot = bucket_space_start + bucket_size * i;
+            out = true;
+        }
+    }
+    return out;
+}
+
+template<typename Primitive>
+void BVH<Primitive>::build_helper(int node_idx, size_t max_leaf_size) {
     Node& node = nodes[node_idx];
-    std::cout << "\n";
 
     // check if node is a leaf
     if(node.size <= max_leaf_size) {
-        std::cout << "leaf"
-                  << "\n";
         return;
     }
 
-    std::cout << "node_idx " << node_idx << "\n";
-    std::cout << "max_leaf_size " << max_leaf_size << "\n";
+    // std::cout << "node_idx " << node_idx << "\n";
+    // std::cout << "max_leaf_size " << max_leaf_size << "\n";
 
     size_t num_buckets = 16;
     BBox node_bbox = node.bbox;
     float node_surface_area = node_bbox.surface_area();
     Vec3 node_space = node_bbox.max - node_bbox.min;
+    Vec3 bucket_size = node_space / num_buckets;
 
     // for each axis: x, y, z:
     // initialize bucket counts to 0, per-bucket bboxes to empty
@@ -171,92 +209,36 @@ template<typename Primitive> void BVH<Primitive>::build_helper(int node_idx, siz
         buckets_z[bucket_index_z].primitives_count += 1;
     }
 
-    // for(size_t i = 0; i < num_buckets; i++) {
-    //     std::cout << "ITERATION " << i << "\n";
-    //     std::cout << buckets_x[i].primitives_count << "\n";
-    //     std::cout << buckets_x[i].bbox.surface_area() << "\n";
-    //     std::cout << buckets_y[i].primitives_count << "\n";
-    //     std::cout << buckets_y[i].bbox.surface_area() << "\n";
-    //     std::cout << buckets_z[i].primitives_count << "\n";
-    //     std::cout << buckets_z[i].bbox.surface_area() << "\n";
-
-    //     std::cout << "\n";
-    // }
-
-    // for each of the possible b-1 partition planes, evaluate SAH and find lowest cost partition
-    float left_size = 0;
-    float lowest_cost = FLT_MAX;
-    for(size_t i = 1; i < num_buckets; i++) {
-        Bucket left_partition_buckets_x;
-        Bucket left_partition_buckets_y;
-        Bucket left_partition_buckets_z;
-
-        Bucket right_partition_buckets_x;
-        Bucket right_partition_buckets_y;
-        Bucket right_partition_buckets_z;
-
-        // make the two parititions to evaluate cost on
-        for(size_t j = 0; j < num_buckets; j++) {
-            Bucket bucket_x = buckets_x[j];
-            Bucket bucket_y = buckets_y[j];
-            Bucket bucket_z = buckets_z[j];
-
-            if(j < i) {
-                left_partition_buckets_x.bbox.enclose(bucket_x.bbox);
-                left_partition_buckets_y.bbox.enclose(bucket_y.bbox);
-                left_partition_buckets_z.bbox.enclose(bucket_z.bbox);
-
-                left_partition_buckets_x.primitives_count += bucket_x.primitives_count;
-                left_partition_buckets_y.primitives_count += bucket_y.primitives_count;
-                left_partition_buckets_z.primitives_count += bucket_z.primitives_count;
-            } else {
-                right_partition_buckets_x.bbox.enclose(bucket_x.bbox);
-                right_partition_buckets_y.bbox.enclose(bucket_y.bbox);
-                right_partition_buckets_z.bbox.enclose(bucket_z.bbox);
-
-                right_partition_buckets_x.primitives_count += bucket_x.primitives_count;
-                right_partition_buckets_y.primitives_count += bucket_y.primitives_count;
-                right_partition_buckets_z.primitives_count += bucket_z.primitives_count;
-            }
-        }
-
-        // evaluate SAH = S_A / S_N * num_prim_A + S_B / S_N * num_prim_B
-        float cost_x = left_partition_buckets_x.bbox.surface_area() / node_surface_area *
-                           left_partition_buckets_x.primitives_count +
-                       right_partition_buckets_x.bbox.surface_area() / node_surface_area *
-                           right_partition_buckets_x.primitives_count;
-
-        float cost_y = left_partition_buckets_y.bbox.surface_area() / node_surface_area *
-                           left_partition_buckets_y.primitives_count +
-                       right_partition_buckets_y.bbox.surface_area() / node_surface_area *
-                           right_partition_buckets_y.primitives_count;
-
-        float cost_z = left_partition_buckets_z.bbox.surface_area() / node_surface_area *
-                           left_partition_buckets_z.primitives_count +
-                       right_partition_buckets_z.bbox.surface_area() / node_surface_area *
-                           right_partition_buckets_z.primitives_count;
-
-        // std::cout << "cost_x " << cost_x << "\n";
-        // std::cout << "cost_y " << cost_y << "\n";
-        // std::cout << "cost_z " << cost_z << "\n";
-
-        float potential_lowest_cost = std::min(std::min(cost_x, cost_y), cost_z);
-        // std::cout << "potential_lowest_cost " << potential_lowest_cost << "\n";
-
-        if(potential_lowest_cost < lowest_cost) {
-            lowest_cost = potential_lowest_cost;
-            left_size = i;
-        }
+    // do the partitions
+    float lowest_partition_cost = FLT_MAX;
+    float pivot = -1;
+    float dim = 0;
+    get_lowest_cost_SAH(node_surface_area, node.bbox.min.x, bucket_size.x, buckets_x,
+                        lowest_partition_cost, pivot);
+    if(get_lowest_cost_SAH(node_surface_area, node.bbox.min.y, bucket_size.y, buckets_y,
+                           lowest_partition_cost, pivot)) {
+        dim = 1;
+    }
+    if(get_lowest_cost_SAH(node_surface_area, node.bbox.min.z, bucket_size.z, buckets_z,
+                           lowest_partition_cost, pivot)) {
+        dim = 2;
     }
 
-    // edge case - lowest cost partition is no partition, just split down the middle
-    if(left_size == 0) {
-        left_size = node.size / 2;
-    }
+    auto iter =
+        std::partition(primitives.begin() + node.start, primitives.begin() + node.start + node.size,
+                       [pivot, dim](const Primitive& primitive) {
+                           if(dim == 0) {
+                               return primitive.bbox().center().x < pivot;
+                           } else if(dim == 1) {
+                               return primitive.bbox().center().y < pivot;
+                           } else {
+                               return primitive.bbox().center().z < pivot;
+                           }
+                       });
 
-    std::cout << "left_size " << left_size << "\n";
+    size_t left_size = iter - (primitives.begin() + node.start);
 
-    // create bounding boxes for children
+    // create two child nodes
     BBox split_left_bbox;
     for(size_t i = 0; i < left_size; i++) {
         BBox primitive_bbox = primitives[node.start + i].bbox();
@@ -272,19 +254,17 @@ template<typename Primitive> void BVH<Primitive>::build_helper(int node_idx, siz
     size_t right_size = node.size - left_size;
     size_t right_idx = new_node(split_right_bbox, node.start + left_size, right_size, 0, 0);
 
-    // update parent node
-    node.l = left_idx;
-    node.r = right_idx;
-
-    std::cout << "node left " << node.l << "\n";
-    std::cout << "node right " << node.r << "\n";
+    // update parent node, direct from node array
+    nodes[node_idx].l = left_idx;
+    nodes[node_idx].r = right_idx;
 
     // use lowest cost partition found and recurse on that split
     build_helper(left_idx, max_leaf_size);
     build_helper(right_idx, max_leaf_size);
 }
 
-template<typename Primitive> Trace BVH<Primitive>::hit(const Ray& ray) const {
+template<typename Primitive>
+Trace BVH<Primitive>::hit(const Ray& ray) const {
 
     // TODO (PathTracer): Task 3
     // Implement ray - BVH intersection test. A ray intersects
@@ -357,7 +337,8 @@ BVH<Primitive>::BVH(std::vector<Primitive>&& prims, size_t max_leaf_size) {
     build(std::move(prims), max_leaf_size);
 }
 
-template<typename Primitive> BVH<Primitive> BVH<Primitive>::copy() const {
+template<typename Primitive>
+BVH<Primitive> BVH<Primitive>::copy() const {
     BVH<Primitive> ret;
     ret.nodes = nodes;
     ret.primitives = primitives;
@@ -365,7 +346,8 @@ template<typename Primitive> BVH<Primitive> BVH<Primitive>::copy() const {
     return ret;
 }
 
-template<typename Primitive> bool BVH<Primitive>::Node::is_leaf() const {
+template<typename Primitive>
+bool BVH<Primitive>::Node::is_leaf() const {
     return l == r;
 }
 
@@ -381,16 +363,19 @@ size_t BVH<Primitive>::new_node(BBox box, size_t start, size_t size, size_t l, s
     return nodes.size() - 1;
 }
 
-template<typename Primitive> BBox BVH<Primitive>::bbox() const {
+template<typename Primitive>
+BBox BVH<Primitive>::bbox() const {
     return nodes[root_idx].bbox;
 }
 
-template<typename Primitive> std::vector<Primitive> BVH<Primitive>::destructure() {
+template<typename Primitive>
+std::vector<Primitive> BVH<Primitive>::destructure() {
     nodes.clear();
     return std::move(primitives);
 }
 
-template<typename Primitive> void BVH<Primitive>::clear() {
+template<typename Primitive>
+void BVH<Primitive>::clear() {
     nodes.clear();
     primitives.clear();
 }
