@@ -1,6 +1,7 @@
 
 #include "../rays/bvh.h"
 #include "debug.h"
+#include <iostream>
 #include <stack>
 
 namespace PT {
@@ -60,57 +61,150 @@ void BVH<Primitive>::build(std::vector<Primitive>&& prims, size_t max_leaf_size)
     }
 
     // compute bounding box for all primitives
-    BBox bb;
+    BBox bbox;
     for(size_t i = 0; i < primitives.size(); ++i) {
-        bb.enclose(primitives[i].bbox());
+        bbox.enclose(primitives[i].bbox());
     }
 
-    // set up root node (root BVH). Notice that it contains all primitives.
-    size_t root_node_addr = new_node();
-    Node& node = nodes[root_node_addr];
-    node.bbox = bb;
-    node.start = 0;
-    node.size = primitives.size();
+    size_t node_idx = new_node(bbox, 0, primitives.size(), 0, 0);
+    build_helper(node_idx, max_leaf_size);
+}
 
-    // Create bounding boxes for children
-    BBox split_leftBox;
-    BBox split_rightBox;
+/* Returns true if lowest_partition_cost was updated in this iteration of the function
+ */
+template<typename Primitive>
+bool BVH<Primitive>::get_lowest_cost_SAH(float node_surface_area, float bucket_space_start,
+                                         float bucket_size,
+                                         const std::vector<BVH<Primitive>::Bucket>& buckets,
+                                         float& lowest_cost, float& pivot) {
+    bool out = false;
+    size_t num_buckets = 16;
+    for(size_t i = 1; i < num_buckets; i++) {
+        Bucket left_partition;
+        Bucket right_partition;
 
-    // compute bbox for left child
-    Primitive& p = primitives[0];
-    BBox pbb = p.bbox();
-    split_leftBox.enclose(pbb);
+        // make the two parititions to evaluate cost on
+        for(size_t j = 0; j < num_buckets; j++) {
+            Bucket bucket = buckets[j];
 
-    // compute bbox for right child
-    for(size_t i = 1; i < primitives.size(); ++i) {
-        Primitive& p = primitives[i];
-        BBox pbb = p.bbox();
-        split_rightBox.enclose(pbb);
+            if(j < i) {
+                left_partition.bbox.enclose(bucket.bbox);
+                left_partition.primitives_count += bucket.primitives_count;
+            } else {
+                right_partition.bbox.enclose(bucket.bbox);
+                right_partition.primitives_count += bucket.primitives_count;
+            }
+        }
+
+        float cost = left_partition.bbox.surface_area() / node_surface_area *
+                         left_partition.primitives_count +
+                     right_partition.bbox.surface_area() / node_surface_area *
+                         right_partition.primitives_count;
+
+        if(cost < lowest_cost) {
+            lowest_cost = cost;
+            pivot = bucket_space_start + bucket_size * i;
+            out = true;
+        }
+    }
+    return out;
+}
+
+template<typename Primitive>
+void BVH<Primitive>::build_helper(int node_idx, size_t max_leaf_size) {
+    Node& node = nodes[node_idx];
+
+    // check if node is a leaf
+    if(node.size <= max_leaf_size) {
+        return;
     }
 
-    // Note that by construction in this simple example, the primitives are
-    // contiguous as required. But in the students real code, students are
-    // responsible for reorganizing the primitives in the primitives array so that
-    // after a SAH split is computed, the chidren refer to contiguous ranges of primitives.
+    size_t num_buckets = 16;
+    BBox node_bbox = node.bbox;
+    float node_surface_area = node_bbox.surface_area();
+    Vec3 node_space = node_bbox.max - node_bbox.min;
+    Vec3 bucket_size = node_space / num_buckets;
 
-    size_t startl = 0;  // starting prim index of left child
-    size_t rangel = 1;  // number of prims in left child
-    size_t startr = startl + rangel;  // starting prim index of right child
-    size_t ranger = primitives.size() - rangel; // number of prims in right child
+    // for each axis: x, y, z:
+    // initialize bucket counts to 0, per-bucket bboxes to empty
+    std::vector<Bucket> buckets_x(num_buckets);
+    std::vector<Bucket> buckets_y(num_buckets);
+    std::vector<Bucket> buckets_z(num_buckets);
 
-    // create child nodes
-    size_t node_addr_l = new_node();
-    size_t node_addr_r = new_node();
-    nodes[root_node_addr].l = node_addr_l;
-    nodes[root_node_addr].r = node_addr_r;
+    // for each primitiive p in node:
+    for(size_t i = node.start; i < node.start + node.size; i++) {
+        // compute bucket using p.centroid
+        BBox p_bbox = primitives[i].bbox();
+        Vec3 p_space = (p_bbox.center() - node_bbox.min);
 
-    nodes[node_addr_l].bbox = split_leftBox;
-    nodes[node_addr_l].start = startl;
-    nodes[node_addr_l].size = rangel;
+        Vec3 bucket_index = p_space / node_space * num_buckets;
+        size_t bucket_index_x = bucket_index.x;
+        size_t bucket_index_y = bucket_index.y;
+        size_t bucket_index_z = bucket_index.z;
 
-    nodes[node_addr_r].bbox = split_rightBox;
-    nodes[node_addr_r].start = startr;
-    nodes[node_addr_r].size = ranger;
+        // add primitive to bbox union
+        buckets_x[bucket_index_x].bbox.enclose(p_bbox);
+        buckets_y[bucket_index_y].bbox.enclose(p_bbox);
+        buckets_z[bucket_index_z].bbox.enclose(p_bbox);
+
+        // increment bucket count of primitives
+        buckets_x[bucket_index_x].primitives_count += 1;
+        buckets_y[bucket_index_y].primitives_count += 1;
+        buckets_z[bucket_index_z].primitives_count += 1;
+    }
+
+    // do the partitions
+    float lowest_partition_cost = FLT_MAX;
+    float pivot = -1;
+    float dim = 0;
+    get_lowest_cost_SAH(node_surface_area, node.bbox.min.x, bucket_size.x, buckets_x,
+                        lowest_partition_cost, pivot);
+    if(get_lowest_cost_SAH(node_surface_area, node.bbox.min.y, bucket_size.y, buckets_y,
+                           lowest_partition_cost, pivot)) {
+        dim = 1;
+    }
+    if(get_lowest_cost_SAH(node_surface_area, node.bbox.min.z, bucket_size.z, buckets_z,
+                           lowest_partition_cost, pivot)) {
+        dim = 2;
+    }
+
+    auto iter =
+        std::partition(primitives.begin() + node.start, primitives.begin() + node.start + node.size,
+                       [pivot, dim](const Primitive& primitive) {
+                           if(dim == 0) {
+                               return primitive.bbox().center().x < pivot;
+                           } else if(dim == 1) {
+                               return primitive.bbox().center().y < pivot;
+                           } else {
+                               return primitive.bbox().center().z < pivot;
+                           }
+                       });
+
+    size_t left_size = iter - (primitives.begin() + node.start);
+
+    // create two child nodes
+    BBox split_left_bbox;
+    for(size_t i = 0; i < left_size; i++) {
+        BBox primitive_bbox = primitives[node.start + i].bbox();
+        split_left_bbox.enclose(primitive_bbox);
+    }
+    size_t left_idx = new_node(split_left_bbox, node.start, left_size, 0, 0);
+
+    BBox split_right_bbox;
+    for(size_t i = left_size; i < node.size; i++) {
+        BBox primitive_bbox = primitives[node.start + i].bbox();
+        split_right_bbox.enclose(primitive_bbox);
+    }
+    size_t right_size = node.size - left_size;
+    size_t right_idx = new_node(split_right_bbox, node.start + left_size, right_size, 0, 0);
+
+    // update parent node, direct from node array
+    nodes[node_idx].l = left_idx;
+    nodes[node_idx].r = right_idx;
+
+    // use lowest cost partition found and recurse on that split
+    build_helper(left_idx, max_leaf_size);
+    build_helper(right_idx, max_leaf_size);
 }
 
 template<typename Primitive>
@@ -123,13 +217,63 @@ Trace BVH<Primitive>::hit(const Ray& ray) const {
 
     // The starter code simply iterates through all the primitives.
     // Again, remember you can use hit() on any Primitive value.
-
+    Node node = nodes[0];
+    BBox node_bbox = node.bbox;
+    Vec2 hit_times;
     Trace ret;
-    for(const Primitive& prim : primitives) {
-        Trace hit = prim.hit(ray);
-        ret = Trace::min(ret, hit);
+    if(node_bbox.hit(ray, hit_times)) {
+        hit_helper(ray, node, &ret);
     }
     return ret;
+}
+
+template<typename Primitive>
+void BVH<Primitive>::hit_helper(const Ray& ray, const Node& node, Trace* ret) const {
+
+    if(node.is_leaf()) {
+        for(size_t i = node.start; i < node.start + node.size; i++) {
+            Trace hit = primitives[i].hit(ray);
+            *ret = Trace::min(*ret, hit);
+        }
+        return;
+    }
+
+    Node left_node = nodes[node.l];
+    BBox left_bbox = left_node.bbox;
+    Vec2 left_hit_times;
+    bool left_hit = left_bbox.hit(ray, left_hit_times);
+
+    Node right_node = nodes[node.r];
+    BBox right_bbox = right_node.bbox;
+    Vec2 right_hit_times;
+    bool right_hit = right_bbox.hit(ray, right_hit_times);
+
+    if(left_hit && !right_hit) {
+        // only left bbox hit
+        hit_helper(ray, left_node, ret);
+    } else if(!left_hit && right_hit) {
+        // only right bbox hit
+        hit_helper(ray, right_node, ret);
+    } else {
+        // both hit - front-to-back traversal
+        if(left_hit_times.x < right_hit_times.x) {
+            // left bbox hit before right bbox
+            hit_helper(ray, left_node, ret);
+            if(!ret->hit || right_hit_times.x < ret->distance) {
+                // if ray didn't hit anything on left, or right is still closer than closest hit
+                // on left
+                hit_helper(ray, right_node, ret);
+            }
+        } else {
+            // right bbox hit before left bbox
+            hit_helper(ray, right_node, ret);
+            if(!ret->hit || left_hit_times.x < ret->distance) {
+                // if ray didn't hit anything on right, or left is still closer than closest hit
+                // on right
+                hit_helper(ray, left_node, ret);
+            }
+        }
+    }
 }
 
 template<typename Primitive>
