@@ -70,8 +70,6 @@ void BVH<Primitive>::build(std::vector<Primitive>&& prims, size_t max_leaf_size)
     build_helper(node_idx, max_leaf_size);
 }
 
-/* Returns true if lowest_partition_cost was updated in this iteration of the function
- */
 template<typename Primitive>
 bool BVH<Primitive>::get_lowest_cost_SAH(float node_surface_area, float bucket_space_start,
                                          float bucket_size,
@@ -122,7 +120,7 @@ void BVH<Primitive>::build_helper(int node_idx, size_t max_leaf_size) {
     size_t num_buckets = 16;
     BBox node_bbox = node.bbox;
     float node_surface_area = node_bbox.surface_area();
-    Vec3 node_space = node_bbox.max - node_bbox.min;
+    Vec3 node_space = node_bbox.max - node_bbox.min + 1e-2;
     Vec3 bucket_size = node_space / num_buckets;
 
     // for each axis: x, y, z:
@@ -154,20 +152,19 @@ void BVH<Primitive>::build_helper(int node_idx, size_t max_leaf_size) {
     }
 
     // do the partitions
-    float lowest_partition_cost = FLT_MAX;
+    float lowest_cost = FLT_MAX;
     float pivot = -1;
-    float dim = 0;
-    get_lowest_cost_SAH(node_surface_area, node.bbox.min.x, bucket_size.x, buckets_x,
-                        lowest_partition_cost, pivot);
+    int dim = 0; // 0 for x, 1 for y, 2 for z
+    get_lowest_cost_SAH(node_surface_area, node.bbox.min.x, bucket_size.x, buckets_x, lowest_cost,
+                        pivot);
     if(get_lowest_cost_SAH(node_surface_area, node.bbox.min.y, bucket_size.y, buckets_y,
-                           lowest_partition_cost, pivot)) {
+                           lowest_cost, pivot)) {
         dim = 1;
     }
     if(get_lowest_cost_SAH(node_surface_area, node.bbox.min.z, bucket_size.z, buckets_z,
-                           lowest_partition_cost, pivot)) {
+                           lowest_cost, pivot)) {
         dim = 2;
     }
-
     auto iter =
         std::partition(primitives.begin() + node.start, primitives.begin() + node.start + node.size,
                        [pivot, dim](const Primitive& primitive) {
