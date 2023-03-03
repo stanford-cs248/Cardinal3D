@@ -36,5 +36,5 @@ bool BBox::hit(const Ray& ray, Vec2& times) const {
     times.x = t_min;
     times.y = t_max;
 
-    return false;
+    return true;
 }
