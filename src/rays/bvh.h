@@ -39,6 +39,13 @@ private:
     };
     size_t new_node(BBox box = {}, size_t start = 0, size_t size = 0, size_t l = 0, size_t r = 0);
 
+    struct Bucket {
+        BBox bbox;
+        size_t primitives_count = 0;
+    };
+    void build_helper(int node_idx, size_t max_leaf_size);
+    void hit_helper(const Ray& ray, const Node& node, Trace* ret) const;
+
     std::vector<Node> nodes;
     std::vector<Primitive> primitives;
     size_t root_idx = 0;
