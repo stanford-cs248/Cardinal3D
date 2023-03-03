@@ -176,7 +176,7 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     float throughput_probability = 1 - throughput.luma();
     if(RNG::unit() < throughput_probability) {
-        return radiance_out;
+        return radiance_out + ray_sample.emissive;
     }
 
     // (4) Create new scene-space ray and cast it to get incoming light. As with shadow rays,
