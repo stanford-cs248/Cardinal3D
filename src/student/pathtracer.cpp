@@ -27,7 +27,8 @@ Spectrum Pathtracer::trace_pixel(size_t x, size_t y) {
         // If n_samples > 1, please send the ray through any random point within the pixel
         Samplers::Rect::Uniform rect_sampler(Vec2(1.f, 1.f));
         float pdf;
-        Vec2 rand_point = rect_sampler.sample(pdf); // (0,0) -> sample(0,0) = (0.1, 0.1) -> generate_ray(0.1,0.1) | (h,w) = (10,10) 
+        Vec2 rand_point = rect_sampler.sample(
+            pdf); // (0,0) -> sample(0,0) = (0.1, 0.1) -> generate_ray(0.1,0.1) | (h,w) = (10,10)
         out = camera.generate_ray((xy + rand_point) / wh);
     } else {
 
@@ -40,11 +41,11 @@ Spectrum Pathtracer::trace_pixel(size_t x, size_t y) {
     // of code will log .03% of all rays (see util/rand.h) for visualization in the app.
     // see student/debug.h for more detail.
     // if(RNG::coin_flip(0.0005f)) log_ray(out, 10.0f);
-    log_ray(camera.generate_ray(Vec2(.5f,.5f) / wh), 10.0f);
-    log_ray(camera.generate_ray(Vec2(0.f,0.f) / wh), 10.0f);
-    log_ray(camera.generate_ray(Vec2(1.f,1.f) / wh), 10.0f);
-    log_ray(camera.generate_ray(Vec2(1.f,0.f) / wh), 10.0f);
-    log_ray(camera.generate_ray(Vec2(0.f,1.f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(.5f, .5f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(0.f, 0.f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(1.f, 1.f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(1.f, 0.f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(0.f, 1.f) / wh), 10.0f);
 
     return trace_ray(out);
 }
@@ -155,22 +156,44 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     // (1) Ray objects have a depth field; if it reaches max_depth, you should
     // terminate the path.
+    if(ray.depth >= max_depth) {
+        return radiance_out;
+    }
 
     // (2) Randomly select a new ray direction (it may be reflection or transmittance
     // ray depending on surface type) using bsdf.sample()
+    BSDF_Sample ray_sample = bsdf.sample(hit.normal);
 
     // (3) Compute the throughput of the recursive ray. This should be the current ray's
     // throughput scaled by the BSDF attenuation, cos(theta), and BSDF sample PDF.
     // Potentially terminate the path using Russian roulette as a function of the new throughput.
     // Note that allowing the termination probability to approach 1 may cause extra speckling.
 
-    // (4) Create new scene-space ray and cast it to get incoming light. As with shadow rays, you
-    // should modify time_bounds so that the ray does not intersect at time = 0. Remember to
+    // cos is expressed as dot (u,v) / (len(u)*len(v)). Since len of direction and normal are both
+    // 1, cos is just the dot product
+    float cos_theta = dot(ray_sample.direction.unit(), hit.normal);
+    Spectrum throughput =
+        Spectrum(ray.throughput * ray_sample.attenuation * cos_theta * 1.f / ray_sample.pdf);
+
+    float throughput_probability = 1 - throughput.luma();
+    if(RNG::unit() < throughput_probability) {
+        return radiance_out + ray_sample.emissive;
+    }
+
+    // (4) Create new scene-space ray and cast it to get incoming light. As with shadow rays,
+    // you should modify time_bounds so that the ray does not intersect at time = 0. Remember to
     // set the new throughput and depth values.
+    Ray new_scene_ray(hit.origin, ray_sample.direction.unit());
+    new_scene_ray.throughput = throughput;
+    new_scene_ray.depth = ray.depth + 1;
+    new_scene_ray.dist_bounds = Vec2(EPS_F, ray.dist_bounds.y - EPS_F);
 
     // (5) Add contribution due to incoming light with proper weighting. Remember to add in
     // the BSDF sample emissive term.
-    return radiance_out;
+    return radiance_out + ray_sample.emissive +
+           (cos_theta / (ray_sample.pdf * throughput_probability)) * trace_ray(new_scene_ray) *
+               ray_sample.attenuation;
+    ;
 }
 
 } // namespace PT
