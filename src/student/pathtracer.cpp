@@ -21,14 +21,15 @@ Spectrum Pathtracer::trace_pixel(size_t x, size_t y) {
     Ray out;
     // If n_samples is 1, please send the ray through the center of the pixel.
     if(n_samples == 1) {
-        out = camera.generate_ray(Vec2(x + 0.5f, y + 0.5f) / wh);
+        out = camera.generate_ray((xy + 0.5f) / wh);
         return trace_ray(out);
     } else if(n_samples > 1) {
         // If n_samples > 1, please send the ray through any random point within the pixel
-        Samplers::Rect::Uniform rect_sampler;
+        Samplers::Rect::Uniform rect_sampler(Vec2(1.f, 1.f));
         float pdf;
-        Vec2 rand_point = rect_sampler.sample(pdf);
-        out = camera.generate_ray(rand_point / wh);
+        Vec2 rand_point = rect_sampler.sample(
+            pdf); // (0,0) -> sample(0,0) = (0.1, 0.1) -> generate_ray(0.1,0.1) | (h,w) = (10,10)
+        out = camera.generate_ray((xy + rand_point) / wh);
     } else {
 
         // As an example, the code below generates a ray through the bottom left of the
@@ -39,7 +40,12 @@ Spectrum Pathtracer::trace_pixel(size_t x, size_t y) {
     // Tip: you may want to use log_ray for debugging. Given ray t, the following lines
     // of code will log .03% of all rays (see util/rand.h) for visualization in the app.
     // see student/debug.h for more detail.
-    if(RNG::coin_flip(0.0005f)) log_ray(out, 10.0f);
+    // if(RNG::coin_flip(0.0005f)) log_ray(out, 10.0f);
+    log_ray(camera.generate_ray(Vec2(.5f, .5f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(0.f, 0.f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(1.f, 1.f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(1.f, 0.f) / wh), 10.0f);
+    log_ray(camera.generate_ray(Vec2(0.f, 1.f) / wh), 10.0f);
 
     return trace_ray(out);
 }
@@ -171,7 +177,7 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     float throughput_probability = 1 - throughput.luma();
     if(RNG::unit() < throughput_probability) {
-        return radiance_out;
+        return radiance_out + ray_sample.emissive;
     }
 
     // (4) Create new scene-space ray and cast it to get incoming light. As with shadow rays,
@@ -184,9 +190,9 @@ Spectrum Pathtracer::trace_ray(const Ray& ray) {
 
     // (5) Add contribution due to incoming light with proper weighting. Remember to add in
     // the BSDF sample emissive term.
-    return radiance_out +=
-           ray_sample.emissive + (cos_theta / (ray_sample.pdf * throughput_probability)) *
-                                     trace_ray(new_scene_ray) * ray_sample.attenuation;
+    return radiance_out + ray_sample.emissive +
+           (cos_theta / (ray_sample.pdf * throughput_probability)) * trace_ray(new_scene_ray) *
+               ray_sample.attenuation;
     ;
 }
 
