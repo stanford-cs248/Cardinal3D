@@ -45,8 +45,8 @@ private:
     };
     void build_helper(int node_idx, size_t max_leaf_size);
     bool get_lowest_cost_SAH(float node_surface_area, float bucket_space_start, float bucket_size,
-                             const std::vector<BVH<Primitive>::Bucket>& buckets,
-                             float& lowest_partition_cost, float& pivot);
+                             const std::vector<BVH<Primitive>::Bucket>& buckets, float& lowest_cost,
+                             float& pivot);
 
     void hit_helper(const Ray& ray, const Node& node, Trace* ret) const;
 
