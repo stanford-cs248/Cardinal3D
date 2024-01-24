@@ -132,7 +132,7 @@ void App::event(SDL_Event e) {
             Scene_ID id = Renderer::get().read_id(p);
 
             if(cam_mode == Camera_Control::none &&
-               (plt->is_down(SDL_SCANCODE_LSHIFT) | plt->is_down(SDL_SCANCODE_RSHIFT))) {
+               (plt->is_down(SDL_SCANCODE_LSHIFT) || plt->is_down(SDL_SCANCODE_RSHIFT))) {
                 cam_mode = Camera_Control::orbit;
             } else if(gui.select(scene, undo, id, camera.pos(), n, screen_to_world(p))) {
                 cam_mode = Camera_Control::none;
