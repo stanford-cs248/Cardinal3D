@@ -45,9 +45,11 @@ The windows build is easiest to set up using the Visual Studio compiler (for now
 
 Once you have VS and CMake installed, you can follow the same procedure as PA1 (first run CMake to create ``Cardinal3D.sln``, then open it in VS) to build, run and debug the project. The default build mode is ``RelWithDebInfo``, you can also build in ``Debug`` mode, which, while far slower, makes the debugging experience much more intuitive.
 
-Alternatively you can simply run our provided script (double click) ``build_win.bat`` in the project root, which will automatically import the compiler and build the project for you without running CMake and VS GUI. ``Cardinal3D.exe`` will be generated under ``build/RelWithDebInfo/``. (You may need to edit the script if you installed a different version of VS or used custom install path.)
+Make sure that you have "Treat Warnings As Errors" set off in the project properties in Visual Studio. You can do this by right clicking on the project in the solution explorer, selecting "Properties", and then navigating to "C/C++" -> "General" and setting "Treat Warnings As Errors" to "No". 
 
-Otherwise, if you want to build manually, the steps (assuming MSVC is in scope) are:
+<img src="building_vs_warnings.png" alt="vs_warnings" width="500" height="auto">
+
+If you want to build manually, the steps (assuming MSVC is in scope) are:
 ```
 mkdir build
 cd build
