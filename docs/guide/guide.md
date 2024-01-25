@@ -51,6 +51,5 @@ These additional modes are in the codebase for non-CS248A reasons, and you might
 
 - [Rig](rig)
 - [Animate](animate)
-- [Simulate](simulate)
 
 
