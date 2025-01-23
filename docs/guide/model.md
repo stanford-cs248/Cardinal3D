@@ -142,7 +142,7 @@ that, e.g., flat faces stay flat, and old vertices remain where they were.
 Just as with linear subdivision, each
 polygon is split into quadrilaterals, but this time the vertex positions are
 updated according to the [Catmull-Clark subdivision
-rules]([https://en.wikipedia.org/wiki/Catmull_Clark_subdivision_surface](https://en.wikipedia.org/wiki/Catmull%E2%80%93Clark_subdivision_surface)),
+rules](https://en.wikipedia.org/wiki/Catmull_Clark_subdivision_surface),
 ultimately generating a nice rounded surface.
 
 <video src="{{ site.baseurl }}/guide/catmull_subd.mp4" controls preload muted loop style="max-width: 100%; margin: 0 auto;"></video>

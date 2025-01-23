@@ -34,7 +34,7 @@ If there are no lights in the scene, your rendering will be nearly all black.  T
 
 In Render mode, simply check the box for "Logged Rays", and you would be able to view the camera rays that you generated in task 1 when you start render.
 
-![ray](render_mode/log_ray.png)
+<!-- ![ray](render_mode/log_ray.png) -->
 
 ## Visualize BVH
 
