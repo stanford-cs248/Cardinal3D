@@ -28,7 +28,7 @@ When you have successfully built your code, you should get an executable named `
 
 
 ## Evaluation
-For this assignment, you will implement methods in `meshEdit.cpp`.
+For this assignment, you will implement methods in `src/student/meshedit.cpp`.
 
 The User Guide on the wiki describes a large number of features that are in principle available in MeshEdit mode. You have to successfully implement a subset of the features as __basic tasks__, implementing additional features beyond the basic tasks will earn you extra points.
 
