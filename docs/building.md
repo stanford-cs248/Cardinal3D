@@ -6,7 +6,7 @@ permalink: /build/
 
 # Building Cardinal3D
 
-To create a private git mirror that can pull changes from Cardinal3D, see [Git Setup](git) (optional, you can just simply clone the repo).
+To create a private git mirror that can pull changes from Cardinal3D, see [Git Setup](/Cardinal3D/git) (optional, you can just simply clone the repo).
 
 Note: the first build on any platform will be very slow, as it must compile most dependencies. Subsequent builds will only need to re-compile your edited Cardinal3D code.
 
