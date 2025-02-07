@@ -4,7 +4,7 @@ We have created a [Wiki](https://stanford-cs248.github.io/Cardinal3D/) that will
 
 ## Due Date
 
-The assignment is due Feb. 27 at 11:59 PM.
+The assignment is due Feb. 20 at 11:59 PM.
 
 ## Submission Instructions
 Please zip the following files and upload your zipped file to Gradescope.
