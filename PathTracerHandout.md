@@ -40,7 +40,7 @@ You are required to complete the following tasks to receive the baseline score o
 
 For additional credit you can attempt additional tasks: We'll cap all scores at 104.
 
-* Ray-Sphere intersection (1 pt, descried in Task 2)
+* Ray-Sphere intersection (1 pt, described in Task 2)
 * Task 5: Global illumination path tracing with Russian roulette (6 pts)
 * Transmissive surfaces, w/ transmission given by the Fresnel equations) (4 pts, described in Task 6)
 
