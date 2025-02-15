@@ -24,7 +24,7 @@ Your job is to implement the logic needed to compute whether hit point is in sha
 
 * A common ray tracing pitfall is for the "shadow ray" shot into the scene accidentally hits the same object as `r` did. (The surface is erroneously determined to be occluded because the shadow ray is determined to hit the surface itself!). We recommend that you make sure the origin of the shadow ray is offset from the surface to avoid these erroneous "self-intersections". For example, consider setting the ray's `dist_bounds` appropriately to avoid hits with very small `t` values, or adjust the origin of the shadow ray to be `hit.position + epsilon * sample.direction` instead of simply `hit.position`. `EPS_F` is defined in for this purpose (see `lib/mathlib.h`).
 
-* Another common pitfall is forgetting that the surface is not in shadow if the shadow ray hits scene geometry _after reaching the light_. (Also note that `Ray` has a member called `time_bound`...)
+* Another common pitfall is forgetting that the surface is not in shadow if the shadow ray hits scene geometry _after reaching the light_. (Also note that `Ray` has a member called `dist_bound`...)
 * You will find it useful to debug your shadow code using the `DirectionalLight` since it produces hard shadows that are easy to reason about.
 * When you get started on Task 4, comment out the line `Spectrum radiance_out = Spectrum(0.25f);` and initialize the `radiance_out` to be the correct value. Hint: is there supposed to have any light before we even start considering each light sample?
 
